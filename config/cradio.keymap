@@ -60,6 +60,11 @@
             bindings = <&kp DOUBLE_QUOTES>;
             key-positions = <5 6>;
         };
+
+        numpad {
+            bindings = <&to 3>;
+            key-positions = <1 10 12>;
+        };
     };
 
     keymap {
@@ -67,10 +72,10 @@
 
         colemak_base {
             bindings = <
-&kp Q           &kp W           &kp F        &kp R             &kp B             &kp J      &kp L              &kp U        &kp Y            &kp COLON
-&mt LEFT_GUI A  &mt LEFT_ALT R  &mt LCTRL S  &mt LEFT_SHIFT T  &kp G             &kp M      &mt RIGHT_SHIFT N  &mt RCTRL E  &mt RIGHT_ALT I  &mt RIGHT_GUI O
-&kp Z           &kp X           &kp C        &kp D             &kp B             &kp SLASH  &kp K              &kp H        &kp COMMA        &mt EXCLAMATION DOT
-                                             &lt 1 SPACE       &kp LEFT_SHIFT    &lt 4 TAB  &lt 1 RET
+&kp Q           &kp W           &kp F        &kp R             &kp B    &kp J      &kp L              &kp U        &kp Y            &kp COLON
+&mt LEFT_GUI A  &mt LEFT_ALT R  &mt LCTRL S  &mt LEFT_SHIFT T  &kp G    &kp M      &mt RIGHT_SHIFT N  &mt RCTRL E  &mt RIGHT_ALT I  &mt RIGHT_GUI O
+&kp Z           &kp X           &kp C        &kp D             &kp B    &kp SLASH  &kp K              &kp H        &kp COMMA        &mt EXCLAMATION DOT
+                                             &lt 1 SPACE       &sl 2    &lt 4 TAB  &lt 1 RET
             >;
         };
 
@@ -83,11 +88,11 @@
             >;
         };
 
-        FN_keys {
+        number-and-fn {
             bindings = <
-&kp F1  &kp F2  &kp F3  &kp F4  &kp F5    &kp F6  &kp F7  &kp F8  &kp F9  &kp F10
-&trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &kp F11
-&none   &none   &none   &none   &none     &trans  &trans  &trans  &trans  &kp F12
+&kp N1  &kp N2  &kp N3  &kp N4  &kp N5    &kp N6  &kp N7  &kp N8  &kp N9   &kp N0
+&kp F1  &kp F2  &kp F3  &kp F4  &kp F5    &kp F6  &kp F7  &kp F8  &kp F9   &kp F10
+&none   &none   &none   &none   &none     &trans  &trans  &trans  &kp F11  &kp F12
                         &none   &none     &none   &none
             >;
         };
@@ -103,10 +108,10 @@
 
         settings {
             bindings = <
-&kp F1   &kp F2   &kp F3  &kp F4  &kp F5     &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4
-&kp F6   &kp F7   &kp F8  &kp F9  &kp F10    &none         &none         &none         &none         &bt BT_CLR
-&kp F11  &kp F12  &none   &none   &none      &none         &none         &none         &none         &none
-                          &none   &none      &none         &none
+&none  &none  &none  &none  &none    &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4
+&none  &none  &none  &none  &none    &none         &none         &none         &none         &bt BT_CLR
+&none  &none  &none  &none  &none    &none         &none         &none         &none         &none
+                     &none  &none    &none         &none
             >;
         };
     };

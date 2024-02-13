@@ -46,9 +46,19 @@
             key-positions = <23 24>;
         };
 
-        panic {
+        to_default {
             bindings = <&to 0>;
             key-positions = <0 9>;
+        };
+
+        settings {
+            bindings = <&to 4>;
+            key-positions = <20 29>;
+        };
+
+        alt_quotes {
+            bindings = <&kp DOUBLE_QUOTES>;
+            key-positions = <5 6>;
         };
     };
 
@@ -65,69 +75,46 @@
 
         colemak_base {
             bindings = <
-&kp Q           &kp W           &kp F        &kp R             &kp B        &kp J      &kp L              &kp U        &kp Y            &kp COLON
-&mt LEFT_GUI A  &mt LEFT_ALT R  &mt LCTRL S  &mt LEFT_SHIFT T  &kp G        &kp M      &mt RIGHT_SHIFT N  &mt RCTRL E  &mt RIGHT_ALT I  &mt RIGHT_GUI O
-&kp Z           &kp X           &kp C        &kp D             &kp B        &kp SLASH  &kp K              &kp H        &kp COMMA        &kp PERIOD
-                                             &kp SPACE         &kp MINUS    &lt 2 TAB  &lt 1 RET
+&kp Q           &kp W           &kp F        &kp R             &kp B             &kp J      &kp L              &kp U        &kp Y            &kp COLON
+&mt LEFT_GUI A  &mt LEFT_ALT R  &mt LCTRL S  &mt LEFT_SHIFT T  &kp G             &kp M      &mt RIGHT_SHIFT N  &mt RCTRL E  &mt RIGHT_ALT I  &mt RIGHT_GUI O
+&kp Z           &kp X           &kp C        &kp D             &kp B             &kp SLASH  &kp K              &kp H        &kp COMMA        &mt EXCLAMATION DOT
+                                             &lt 1 SPACE       &kp LEFT_SHIFT    &lt 4 TAB  &lt 1 RET
             >;
         };
 
-        /*
-  
- | 1 | 2 | 3 | 4 | 5 |       | 6 | 7 | 8 | 9 | 0 |
- | # | _ | ( | [ | { |       | = | ? | ' | + | * |
- | $ | & | ) | ] | } |       | @ | ! | " | - | / |
-             |   | CMD |    |   |   |
-  */
-
-        sym_layer {
+        symbol {
             bindings = <
 &kp HASH            &kp PERCENT         &kp LESS_THAN         &kp GREATER_THAN       &kp TILDE           &kp MINUS  &kp LEFT_BRACE                    &kp RIGHT_BRACE              &kp GRAVE                   &kp COLON
 &mt LEFT_GUI CARET  &mt LEFT_ALT EQUAL  &mt LCTRL UNDERSCORE  &mt LEFT_SHIFT DOLLAR  &kp ASTERISK        &kp PLUS   &mt RIGHT_SHIFT LEFT_PARENTHESIS  &mt RCTRL RIGHT_PARENTHESIS  &mt RIGHT_ALT LEFT_BRACKET  &mt RIGHT_GUI RIGHT_BRACKET
-&kp BACKSLASH       &kp PIPE            &kp EXCLAMATION       &trans                 &kp SINGLE_QUOTE    &kp DQT    &kp EXCL                          &kp DQT                      &kp MINUS                   &kp SLASH
+&kp BACKSLASH       &kp PIPE            &kp PRCNT             &kp AT                 &kp SINGLE_QUOTE    &kp DQT    &kp EXCL                          &kp AMPS                     &kp MINUS                   &kp SLASH
                                                               &none                  &trans              &none      &none
             >;
         };
 
-        /*
-  
- | ` | \ | % |   |   |       |   |   |   |   |   |
- | ~ | | | ^ |   |   |       |   |   |   |   |   |
- |   |   |   |   |   |       |   |   |   |   |   |
-             |   |   |       |   |   |
-  */
-
-        numpad_bt {
+        FN_keys {
             bindings = <
-&kp STAR   &kp N7        &kp NUMBER_8  &kp NUMBER_9  &kp MINUS       &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4
-&kp SLASH  &kp NUMBER_4  &kp N5        &kp NUMBER_6  &kp PLUS        &none         &none         &none         &none         &bt BT_CLR
-&kp RET    &kp NUMBER_1  &kp NUMBER_2  &kp NUMBER_3  &kp NUMBER_0    &none         &none         &none         &none         &none
-                                       &none         &none           &none         &none
+&kp F1  &kp F2  &kp F3  &kp F4  &kp F5    &kp F6  &kp F7  &kp F8  &kp F9  &kp F10
+&trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &kp F11
+&none   &none   &none   &none   &none     &trans  &trans  &trans  &trans  &kp F12
+                        &none   &none     &none   &none
             >;
         };
 
-        /*
-  
- | ESC |   |   |   |   |           |   |   |   |   |   |
- | TAB |   |   |   |   |           | h | j | k | l |   |
- | CAP |   |   |   |   |           |   |   |   |   |   |
-      |   |   |           | BSPC | ENTER |
-  */
-        // &kp LCMD(LS(NUMBER_3))  &kp LCMD(LS(NUMBER_4))  &kp LCMD(LS(NUMBER_5))
-        /*
-  
- | F1 | F2 | F3 | F4 | F5 |           | F6 | F7 | F8 | F9 | F10 |
- |   |   |   |   |   |           |   |   |   |   |   |
- | F11 | F12 |   |   |   |           |   |   |   |   |   |
-             |   |   |           |   |   |
-  */
-
-        fnc_2_layer {
+        numpad_arrow {
             bindings = <
-&kp F1         &kp F2         &kp F3         &kp F4         &kp F5           &kp F6             &kp F7             &kp F8             &kp F9             &kp F10
-&kp LA(LS(A))  &kp LA(LS(S))  &kp LA(LS(D))  &kp LA(LS(F))  &kp LA(LS(I))    &kp LA(LS(H))      &kp LA(LS(J))      &kp LA(LS(K))      &kp LA(LS(L))      &kp F11
-&none          &none          &none          &none          &none            &kp LA(LS(LC(H)))  &kp LA(LS(LC(J)))  &kp LA(LS(LC(K)))  &kp LA(LS(LC(L)))  &kp F12
-                                             &none          &none            &none              &none
+&trans    &kp UP_ARROW    &trans     &trans  &trans         &kp FSLH  &kp N7  &kp N8  &kp N9  &kp MINUS
+&kp LEFT  &kp DOWN_ARROW  &kp RIGHT  &trans  &trans         &trans    &kp N4  &kp N5  &kp N6  &trans
+&trans    &trans          &trans     &trans  &trans         &trans    &kp N1  &kp N2  &kp N3  &kp ENTER
+                                     &trans  &key_repeat    &trans    &trans
+            >;
+        };
+
+        settings {
+            bindings = <
+&kp F1   &kp F2   &kp F3  &kp F4  &kp F5     &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4
+&kp F6   &kp F7   &kp F8  &kp F9  &kp F10    &none         &none         &none         &none         &bt BT_CLR
+&kp F11  &kp F12  &none   &none   &none      &none         &none         &none         &none         &none
+                          &none   &none      &none         &none
             >;
         };
     };

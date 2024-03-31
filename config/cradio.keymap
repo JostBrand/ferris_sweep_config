@@ -47,7 +47,7 @@
         };
 
         to_default {
-            bindings = <&to 0>;
+            bindings = <&tog 0>;
             key-positions = <0 9>;
         };
 
@@ -73,7 +73,7 @@
 
         settings {
             bindings = <&tog 4>;
-            key-positions = <2 3>;
+            key-positions = <0 4>;
         };
     };
 
@@ -82,10 +82,10 @@
 
         colemak_base {
             bindings = <
-&kp Q           &kp W           &kp F        &kp R             &kp B    &kp J      &kp L              &kp U        &kp Y            &mt UNDER MINUS
-&mt LEFT_GUI A  &mt LEFT_ALT R  &mt LCTRL S  &mt LEFT_SHIFT T  &kp G    &kp M      &mt RIGHT_SHIFT N  &mt RCTRL E  &mt RIGHT_ALT I  &mt RIGHT_GUI O
-&lt 3 Z         &kp X           &kp C        &kp D             &kp V    &kp SLASH  &kp K              &kp H        &mt COLON COMMA  &mt EXCLAMATION DOT
-                                             &lt 1 SPACE       &mo 2    &lt 4 TAB  &lt 1 RET
+&kp Q           &kp W           &kp F        &kp P             &kp B            &kp J      &kp L              &kp U        &kp Y            &mt UNDER MINUS
+&mt LEFT_GUI A  &mt LEFT_ALT R  &mt LCTRL S  &mt LEFT_SHIFT T  &kp G            &kp M      &mt RIGHT_SHIFT N  &mt RCTRL E  &mt RIGHT_ALT I  &mt RIGHT_GUI O
+&lt 3 Z         &kp X           &kp C        &kp D             &kp V            &kp SLASH  &kp K              &kp H        &mt COLON COMMA  &mt EXCLAMATION DOT
+                                             &lt 1 SPACE       &kp BACKSPACE    &lt 2 TAB  &lt 1 RET
             >;
         };
 

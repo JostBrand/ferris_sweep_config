@@ -82,10 +82,10 @@
 
         colemak_base {
             bindings = <
-&kp Q           &kp W           &kp F        &kp P             &kp B          &kp J      &kp L              &kp U        &kp Y            &mt UNDER MINUS
-&mt LEFT_GUI A  &mt LEFT_ALT R  &mt LCTRL S  &mt LEFT_SHIFT T  &kp G          &kp M      &mt RIGHT_SHIFT N  &mt RCTRL E  &mt RIGHT_ALT I  &mt LEFT_GUI O
-&lt 2 Z         &kp X           &kp C        &kp D             &kp V          &kp SLASH  &kp K              &kp H        &mt COLON COMMA  &lt 2 DOT
-                                             &lt 1 BACKSPACE   &lt 2 SPACE    &lt 3 TAB  &lt 1 RET
+&kp Q           &kp W           &kp F        &kp P             &kp B              &kp J      &kp L              &kp U        &kp Y            &mt UNDER MINUS
+&mt LEFT_GUI A  &mt LEFT_ALT R  &mt LCTRL S  &mt LEFT_SHIFT T  &kp G              &kp M      &mt RIGHT_SHIFT N  &mt RCTRL E  &mt RIGHT_ALT I  &mt LEFT_GUI O
+&lt 2 Z         &kp X           &kp C        &kp D             &kp V              &kp SLASH  &kp K              &kp H        &mt COLON COMMA  &lt 2 DOT
+                                             &lt 1 SPACE       &lt 2 BACKSPACE    &lt 3 TAB  &lt 1 RET
             >;
         };
 

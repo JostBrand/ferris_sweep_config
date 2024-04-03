@@ -109,6 +109,12 @@
             key-positions = <15 16>;
             layers = <0 1 2 3>;
         };
+
+        capsword {
+            bindings = <&caps_word>;
+            key-positions = <29 28>;
+            layers = <0>;
+        };
     };
 
     macros {
@@ -134,24 +140,33 @@
         };
     };
 
+    behaviors {
+        backspace_mod: backspace_mod {
+            compatible = "zmk,behavior-tap-dance";
+            label = "BACKSPACE_MOD";
+            #binding-cells = <0>;
+            bindings = <&lt 2 BACKSPACE>, <&kp BACKSPACE>;
+        };
+    };
+
     keymap {
         compatible = "zmk,keymap";
 
         colemak_base {
             bindings = <
-&kp Q           &kp W           &kp F        &kp P             &kp B              &kp J      &kp L              &kp U        &kp Y            &mt UNDER MINUS
-&mt LEFT_GUI A  &mt LEFT_ALT R  &mt LCTRL S  &mt LEFT_SHIFT T  &kp G              &kp M      &mt RIGHT_SHIFT N  &mt RCTRL E  &mt RIGHT_ALT I  &mt LEFT_GUI O
-&lt 2 Z         &kp X           &kp C        &kp D             &kp V              &kp SLASH  &mt RET K          &kp H        &mt COLON COMMA  &lt 2 DOT
-                                             &lt 1 SPACE       &lt 2 BACKSPACE    &lt 3 TAB  &lt 1 RET
+&kp Q           &kp W           &kp F        &kp P             &kp B             &kp J      &kp L              &kp U        &kp Y            &mt UNDER MINUS
+&mt LEFT_GUI A  &mt LEFT_ALT R  &mt LCTRL S  &mt LEFT_SHIFT T  &kp G             &kp M      &mt RIGHT_SHIFT N  &mt RCTRL E  &mt RIGHT_ALT I  &mt LEFT_GUI O
+&lt 2 Z         &kp X           &kp C        &kp D             &kp V             &kp SLASH  &mt RET K          &kp H        &mt COLON COMMA  &lt 2 DOT
+                                             &lt 1 SPACE       &backspace_mod    &lt 3 TAB  &lt 1 RET
             >;
         };
 
         symbol {
             bindings = <
-&kp HASH            &kp PERCENT         &kp LESS_THAN         &kp GREATER_THAN       &kp TILDE           &kp MINUS  &kp LEFT_BRACE                    &kp RIGHT_BRACE              &kp GRAVE                   &kp COLON
+&kp HASH            &kp AT              &kp LESS_THAN         &kp GREATER_THAN       &kp TILDE           &kp MINUS  &kp LEFT_BRACE                    &kp RIGHT_BRACE              &kp GRAVE                   &kp COLON
 &mt LEFT_GUI CARET  &mt LEFT_ALT EQUAL  &mt LCTRL UNDERSCORE  &mt LEFT_SHIFT DOLLAR  &kp ASTERISK        &kp PLUS   &mt RIGHT_SHIFT LEFT_PARENTHESIS  &mt RCTRL RIGHT_PARENTHESIS  &mt RIGHT_ALT LEFT_BRACKET  &mt RIGHT_GUI RIGHT_BRACKET
-&kp BACKSLASH       &kp PIPE            &kp PRCNT             &kp AT                 &kp SINGLE_QUOTE    &kp DQT    &kp EXCL                          &kp AMPS                     &kp UNDER                   &kp SLASH
-                                                              &trans                 &kp DELETE          &to 1      &trans
+&kp BACKSLASH       &kp PIPE            &kp PRCNT             &trans                 &kp SINGLE_QUOTE    &kp DQT    &kp EXCL                          &kp AMPS                     &kp UNDER                   &kp SLASH
+                                                              &trans                 &kp DELETE          &tog 1     &trans
             >;
         };
 
@@ -160,7 +175,7 @@
 &kp N1             &kp N2       &kp N3         &kp N4             &kp N5    &kp N6  &kp N7                &kp N8             &kp N9                   &kp N0
 &mt LEFT_GUI EXCL  &mt LALT AT  &mt LCTRL SQT  &mt LEFT_SHIFT F4  &trans    &trans  &mt RIGHT_SHIFT HOME  &mt RCTRL PAGE_UP  &mt RIGHT_ALT PAGE_DOWN  &mt RIGHT_GUI END
 &kp F1             &kp F2       &kp F3         &kp F4             &kp F5    &kp F6  &kp F7                &kp F8             &kp F11                  &kp F12
-                                               &trans             &trans    &to 2   &trans
+                                               &trans             &trans    &tog 2  &trans
             >;
         };
 
@@ -169,15 +184,15 @@
 &trans  &trans    &kp UP_ARROW  &trans     &trans         &kp FSLH      &kp N7  &kp N8  &kp N9  &kp MINUS
 &trans  &kp LEFT  &kp DOWN      &kp RIGHT  &trans         &kp ASTERISK  &kp N4  &kp N5  &kp N6  &kp PLUS
 &trans  &trans    &trans        &trans     &trans         &kp N0        &kp N1  &kp N2  &kp N3  &kp ENTER
-                                &trans     &key_repeat    &to 3         &trans
+                                &trans     &key_repeat    &tog 3        &trans
             >;
         };
 
         settings {
             bindings = <
-&bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &to 0     &none  &none  &none  &none  &kp A
+&bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &none     &none  &none  &none  &none  &kp A
 &bt BT_CLR    &none         &none         &none         &none     &none  &none  &none  &none  &none
-&none         &none         &none         &none         &tog 0    &none  &none  &none  &none  &none
+&bootloader   &none         &none         &none         &tog 0    &none  &none  &none  &none  &none
                                           &none         &none     &none  &none
             >;
         };

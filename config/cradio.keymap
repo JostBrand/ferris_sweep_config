@@ -63,12 +63,12 @@
 
         backspace {
             bindings = <&kp BACKSPACE>;
-            key-positions = <20 21>;
+            key-positions = <3 2>;
         };
 
         delete {
             bindings = <&kp DELETE>;
-            key-positions = <3 4>;
+            key-positions = <6 7>;
         };
 
         settings {
@@ -109,10 +109,10 @@
 
         numpad_arrow {
             bindings = <
-&kp LS(LC(TAB))  &kp UP_ARROW    &kp LC(TAB)  &trans  &trans         &kp FSLH      &kp N7  &kp N8  &kp N9  &kp MINUS
-&kp LEFT         &kp DOWN_ARROW  &kp RIGHT    &trans  &trans         &kp ASTERISK  &kp N4  &kp N5  &kp N6  &kp PLUS
-&trans           &kp LC(W)       &trans       &trans  &trans         &kp N0        &kp N1  &kp N2  &kp N3  &kp ENTER
-                                              &trans  &key_repeat    &trans        &trans
+&trans  &trans    &kp UP_ARROW  &trans     &trans         &kp FSLH      &kp N7  &kp N8  &kp N9  &kp MINUS
+&trans  &kp LEFT  &kp DOWN      &kp RIGHT  &trans         &kp ASTERISK  &kp N4  &kp N5  &kp N6  &kp PLUS
+&trans  &trans    &trans        &trans     &trans         &kp N0        &kp N1  &kp N2  &kp N3  &kp ENTER
+                                &trans     &key_repeat    &trans        &trans
             >;
         };
 

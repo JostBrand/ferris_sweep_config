@@ -81,7 +81,7 @@
         };
 
         settings {
-            bindings = <&to 4>;
+            bindings = <&tog 4>;
             key-positions = <0 4>;
             layers = <0>;
         };

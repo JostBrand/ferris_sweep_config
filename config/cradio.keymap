@@ -74,8 +74,9 @@
         };
 
         settings {
-            bindings = <&tog 4>;
+            bindings = <&to 4>;
             key-positions = <0 4>;
+            layers = <0>;
         };
 
         and {
@@ -92,6 +93,11 @@
         improve_prompt {
             bindings = <&llm_prompt>;
             key-positions = <31 18>;
+        };
+
+        alt_ret {
+            bindings = <&kp RET>;
+            key-positions = <15 16>;
         };
     };
 
@@ -135,7 +141,7 @@
 &kp HASH            &kp PERCENT         &kp LESS_THAN         &kp GREATER_THAN       &kp TILDE           &kp MINUS  &kp LEFT_BRACE                    &kp RIGHT_BRACE              &kp GRAVE                   &kp COLON
 &mt LEFT_GUI CARET  &mt LEFT_ALT EQUAL  &mt LCTRL UNDERSCORE  &mt LEFT_SHIFT DOLLAR  &kp ASTERISK        &kp PLUS   &mt RIGHT_SHIFT LEFT_PARENTHESIS  &mt RCTRL RIGHT_PARENTHESIS  &mt RIGHT_ALT LEFT_BRACKET  &mt RIGHT_GUI RIGHT_BRACKET
 &kp BACKSLASH       &kp PIPE            &kp PRCNT             &kp AT                 &kp SINGLE_QUOTE    &kp DQT    &kp EXCL                          &kp AMPS                     &kp UNDER                   &kp SLASH
-                                                              &trans                 &kp DELETE          &trans     &trans
+                                                              &trans                 &kp DELETE          &to 1      &trans
             >;
         };
 
@@ -144,7 +150,7 @@
 &kp N1             &kp N2       &kp N3         &kp N4             &kp N5    &kp N6  &kp N7                &kp N8             &kp N9                   &kp N0
 &mt LEFT_GUI EXCL  &mt LALT AT  &mt LCTRL SQT  &mt LEFT_SHIFT F4  &trans    &trans  &mt RIGHT_SHIFT HOME  &mt RCTRL PAGE_UP  &mt RIGHT_ALT PAGE_DOWN  &mt RIGHT_GUI END
 &kp F1             &kp F2       &kp F3         &kp F4             &kp F5    &kp F6  &kp F7                &kp F8             &kp F11                  &kp F12
-                                               &trans             &trans    &trans  &trans
+                                               &trans             &trans    &to 2   &trans
             >;
         };
 
@@ -153,7 +159,7 @@
 &trans  &trans    &kp UP_ARROW  &trans     &trans         &kp FSLH      &kp N7  &kp N8  &kp N9  &kp MINUS
 &trans  &kp LEFT  &kp DOWN      &kp RIGHT  &trans         &kp ASTERISK  &kp N4  &kp N5  &kp N6  &kp PLUS
 &trans  &trans    &trans        &trans     &trans         &kp N0        &kp N1  &kp N2  &kp N3  &kp ENTER
-                                &trans     &key_repeat    &trans        &trans
+                                &trans     &key_repeat    &to 3         &trans
             >;
         };
 

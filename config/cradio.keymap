@@ -29,26 +29,31 @@
         esc {
             bindings = <&kp ESCAPE>;
             key-positions = <0 1>;
+            layers = <0 1 2 3>;
         };
 
         cut {
             bindings = <&kp LC(X)>;
             key-positions = <21 22>;
+            layers = <0 1 2 3>;
         };
 
         copy {
             bindings = <&kp LC(C)>;
             key-positions = <22 23>;
+            layers = <0 1 2 3>;
         };
 
         paste {
             bindings = <&kp LC(V)>;
             key-positions = <23 24>;
+            layers = <0 1 2 3>;
         };
 
         to_default {
             bindings = <&tog 0>;
             key-positions = <0 9>;
+            layers = <1 2 3 4>;
         };
 
         alt_quotes {
@@ -66,11 +71,13 @@
         backspace {
             bindings = <&kp BACKSPACE>;
             key-positions = <3 2>;
+            layers = <0 2 3 1>;
         };
 
         delete {
             bindings = <&kp DELETE>;
             key-positions = <6 7>;
+            layers = <0 1 2 3>;
         };
 
         settings {
@@ -88,16 +95,19 @@
         the {
             bindings = <&the>;
             key-positions = <13 31>;
+            layers = <0>;
         };
 
         improve_prompt {
             bindings = <&llm_prompt>;
             key-positions = <31 18>;
+            layers = <0>;
         };
 
         alt_ret {
             bindings = <&kp RET>;
             key-positions = <15 16>;
+            layers = <0 1 2 3>;
         };
     };
 

@@ -169,7 +169,7 @@
 
         colemak_base {
             bindings = <
-&mt ESCAPE Q    &kp W           &kp F        &kp P             &kp B            &kp J      &kp L              &kp U        &kp Y            &mt UNDER MINUS
+&mt ESCAPE Q    &kp W           &kp F        &kp P             &kp B            &kp J      &mt SEMICOLON L    &kp U        &kp Y            &mt UNDER MINUS
 &mt LEFT_GUI A  &mt LEFT_ALT R  &mt LCTRL S  &mt LEFT_SHIFT T  &kp G            &kp M      &mt RIGHT_SHIFT N  &mt RCTRL E  &mt RIGHT_ALT I  &mt LEFT_GUI O
 &lt 2 Z         &kp X           &kp C        &kp D             &kp V            &kp SLASH  &mt RET K          &kp H        &mt COLON COMMA  &lt 2 DOT
                                              &lt 1 SPACE       &kp BACKSPACE    &lt 3 TAB  &lt 1 RET

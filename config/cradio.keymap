@@ -63,7 +63,7 @@
         };
 
         numpad {
-            bindings = <&to 3>;
+            bindings = <&to 5>;
             key-positions = <11 2 13>;
             layers = <0>;
         };
@@ -107,6 +107,11 @@
         alt_tab {
             bindings = <&kp TAB>;
             key-positions = <15 16>;
+        };
+
+        alt_semicolon {
+            bindings = <&kp SEMI>;
+            key-positions = <3 4>;
         };
     };
 
@@ -169,10 +174,10 @@
 
         colemak_base {
             bindings = <
-&mt ESCAPE Q    &kp W           &kp F        &kp P             &kp B        &kp J      &mt SEMICOLON L    &kp U        &kp Y            &mt UNDER MINUS
-&mt LEFT_GUI A  &mt LEFT_ALT R  &mt LCTRL S  &mt LEFT_SHIFT T  &kp G        &kp M      &mt RIGHT_SHIFT N  &mt RCTRL E  &mt RIGHT_ALT I  &mt LEFT_GUI O
-&lt 2 Z         &kp X           &kp C        &kp D             &kp V        &kp SLASH  &mt RET K          &kp H        &mt COLON COMMA  &lt 2 DOT
-                                             &lt 1 BACKSPACE   &kp SPACE    &lt 3 TAB  &lt 1 RET
+&mt ESCAPE Q     &kp W           &kp F        &kp P             &kp B        &kp J      &mt SEMICOLON L    &kp U        &kp Y            &mt UNDER MINUS
+&mt LEFT_META A  &mt LEFT_ALT R  &mt LCTRL S  &mt LEFT_SHIFT T  &kp G        &kp M      &mt RIGHT_SHIFT N  &mt RCTRL E  &mt RIGHT_ALT I  &mt RIGHT_META O
+&lt 2 Z          &kp X           &kp C        &kp D             &kp V        &kp SLASH  &kp K              &kp H        &mt COLON COMMA  &lt 2 DOT
+                                              &lt 1 BACKSPACE   &kp SPACE    &lt 3 TAB  &lt 1 RET
             >;
         };
 
@@ -194,12 +199,12 @@
             >;
         };
 
-        numpad_arrow {
+        Arrows_wm {
             bindings = <
-&to 0   &trans    &kp UP_ARROW  &trans     &trans         &kp FSLH      &kp N7  &kp N8  &kp N9  &kp MINUS
-&trans  &kp LEFT  &kp DOWN      &kp RIGHT  &trans         &kp ASTERISK  &kp N4  &kp N5  &kp N6  &kp PLUS
-&trans  &trans    &trans        &trans     &trans         &kp N0        &kp N1  &kp N2  &kp N3  &kp ENTER
-                                &kp SPACE  &key_repeat    &to 3         &trans
+&to 0   &trans    &kp UP_ARROW  &kp LG(LS(NUMBER_3))  &trans         &kp LG(LS(NUMBER_6))  &kp LG(LS(NUMBER_2))  &kp LG(LS(NUMBER_1))  &kp LG(LS(NUMBER_4))  &kp LG(LS(N8))
+&trans  &kp LEFT  &kp DOWN      &kp RIGHT             &trans         &kp ASTERISK          &kp N4                &kp N5                &kp N6                &none
+&trans  &trans    &trans        &trans                &trans         &kp N0                &kp N1                &kp N2                &kp N3                &none
+                                &kp SPACE             &key_repeat    &to 3                 &trans
             >;
         };
 
@@ -209,6 +214,15 @@
 &none  &none  &none       &none         &none           &none         &none         &none  &none  &none
 &none  &none  &bt BT_CLR  &none         &tog 0          &to 0         &none         &none  &none  &none
                           &none         &none           &none         &none
+            >;
+        };
+
+        numpad {
+            bindings = <
+&trans  &trans  &trans  &trans  &trans    &kp KP_DIVIDE  &kp N7  &kp N8  &kp N9  &kp KP_MULTIPLY
+&trans  &trans  &trans  &trans  &trans    &trans         &kp N4  &kp N5  &kp N6  &kp KP_MINUS
+&trans  &trans  &trans  &trans  &trans    &trans         &kp N1  &kp N2  &kp N3  &kp KP_PLUS
+                        &trans  &trans    &trans         &kp N0
             >;
         };
     };

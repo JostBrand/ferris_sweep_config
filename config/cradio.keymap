@@ -201,10 +201,10 @@
 
         Arrows_wm {
             bindings = <
-&to 0   &kp LG(LS(N5))  &kp UP_ARROW  &kp LG(LS(NUMBER_3))  &trans         &kp LG(LS(NUMBER_6))  &kp LG(LS(NUMBER_2))  &kp LG(LS(NUMBER_1))  &kp LG(LS(NUMBER_4))  &kp LG(LS(N8))
-&trans  &kp LEFT        &kp DOWN      &kp RIGHT             &trans         &kp ASTERISK          &kp N4                &kp N5                &kp N6                &none
-&trans  &trans          &trans        &trans                &trans         &kp N0                &kp N1                &kp N2                &kp N3                &none
-                                      &kp SPACE             &key_repeat    &to 3                 &trans
+&to 0    &kp LG(LS(N5))  &kp UP_ARROW  &kp LG(LS(NUMBER_3))  &trans         &kp LG(LS(NUMBER_6))  &kp LG(LS(NUMBER_2))  &kp LG(LS(NUMBER_1))  &kp LG(LS(NUMBER_4))  &kp LG(LS(N8))
+&kp F13  &kp LEFT        &kp DOWN      &kp RIGHT             &kp F14        &kp LG(NUMBER_6)      &kp LG(NUMBER_2)      &kp LG(NUMBER_1)      &kp LG(NUMBER_4)      &kp LG(N8)
+&kp F15  &trans          &trans        &trans                &kp F16        &kp N0                &kp N1                &kp N2                &kp N3                &none
+                                       &kp SPACE             &key_repeat    &to 3                 &trans
             >;
         };
 

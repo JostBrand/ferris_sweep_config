@@ -64,7 +64,7 @@
 
         numpad {
             bindings = <&to 5>;
-            key-positions = <11 2 13>;
+            key-positions = <7 8 9>;
             layers = <0>;
         };
 
@@ -88,7 +88,7 @@
 
         improve_prompt {
             bindings = <&llm_prompt>;
-            key-positions = <18 30>;
+            key-positions = <30 31>;
             layers = <0>;
         };
 

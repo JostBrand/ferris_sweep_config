@@ -113,13 +113,18 @@
             bindings = <&kp SEMI>;
             key-positions = <3 4>;
         };
+
+        studio_unlock {
+            bindings = <&studio_unlock>;
+            key-positions = <20 10 0>;
+        };
     };
 
     macros {
         llm_prompt: llm_prompt {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&kp LS(RET) &kp MINUS &kp MINUS &kp MINUS &kp SPACE &kp I &kp M &kp P &kp R &kp O &kp V &kp E &kp SPACE &kp T &kp H &kp E &kp SPACE &kp W &kp R &kp I &kp T &kp I &kp N &kp G &kp SPACE &kp I &kp N &kp SPACE &kp A &kp SPACE &kp N &kp E &kp U &kp T &kp R &kp A &kp L &kp SPACE &kp T &kp O &kp N &kp E &kp RET>;
+            bindings = <&kp LS(RET) &kp I &kp M &kp P &kp R &kp O &kp V &kp E &kp SPACE &kp T &kp H &kp I &kp S &kp SPACE &kp T &kp E &kp X &kp T &kp SPACE &kp A &kp N &kp D &kp SPACE &kp M &kp A &kp K &kp E &kp SPACE &kp I &kp T &kp SPACE &kp C &kp O &kp N &kp C &kp I &kp S &kp E &kp LC(RET)>;
             label = "LLM_PROMPT";
         };
     };

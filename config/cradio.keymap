@@ -1,0 +1,234 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/keys.h>
+
+#define QWERTY 0
+#define SYM    1
+#define SYM_2  2
+#define FNC    3
+#define FNC_2  4
+
+&mt {
+    //  flavor = "tap-preferred";
+    // tapping_term_ms = <200>;
+
+    tapping-term-ms = <250>;
+    flavor = "tap-preferred";
+};
+
+/ {
+    combos {
+        compatible = "zmk,combos";
+
+        esc {
+            bindings = <&kp ESCAPE>;
+            key-positions = <0 1>;
+            layers = <0 1 2 3>;
+        };
+
+        cut {
+            bindings = <&kp LC(X)>;
+            key-positions = <21 22>;
+            layers = <0 1 2 3>;
+        };
+
+        copy {
+            bindings = <&kp LC(C)>;
+            key-positions = <22 23>;
+            layers = <0 1 2 3>;
+        };
+
+        paste {
+            bindings = <&kp LC(V)>;
+            key-positions = <23 24>;
+            layers = <0 1 2 3>;
+        };
+
+        to_default {
+            bindings = <&to 0>;
+            key-positions = <0 9>;
+            layers = <1 2 3 4>;
+        };
+
+        alt_quotes {
+            bindings = <&kp DOUBLE_QUOTES>;
+            key-positions = <5 6>;
+            layers = <0>;
+        };
+
+        numpad {
+            bindings = <&to 5>;
+            key-positions = <7 8 9>;
+            layers = <0>;
+        };
+
+        backspace {
+            bindings = <&kp BACKSPACE>;
+            key-positions = <3 2>;
+            layers = <0 2 3 1>;
+        };
+
+        delete {
+            bindings = <&kp DELETE>;
+            key-positions = <6 7>;
+            layers = <0 1 2 3>;
+        };
+
+        settings {
+            bindings = <&to 4>;
+            key-positions = <0 1 2>;
+            layers = <0>;
+        };
+
+        improve_prompt {
+            bindings = <&llm_prompt>;
+            key-positions = <30 31>;
+            layers = <0>;
+        };
+
+        alt_ret {
+            bindings = <&kp RET>;
+            key-positions = <14 13>;
+            layers = <0 1 2 3>;
+        };
+
+        capsword {
+            bindings = <&caps_word>;
+            key-positions = <29 28>;
+            layers = <0>;
+        };
+
+        alt_tab {
+            bindings = <&kp TAB>;
+            key-positions = <15 16>;
+        };
+
+        alt_semicolon {
+            bindings = <&kp SEMI>;
+            key-positions = <3 4>;
+        };
+
+        studio_unlock {
+            bindings = <&studio_unlock>;
+            key-positions = <20 10 0>;
+        };
+    };
+
+    macros {
+        llm_prompt: llm_prompt {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp LS(RET) &kp I &kp M &kp P &kp R &kp O &kp V &kp E &kp SPACE &kp T &kp H &kp I &kp S &kp SPACE &kp T &kp E &kp X &kp T &kp SPACE &kp A &kp N &kp D &kp SPACE &kp M &kp A &kp K &kp E &kp SPACE &kp I &kp T &kp SPACE &kp C &kp O &kp N &kp C &kp I &kp S &kp E &kp LC(RET)>;
+            label = "LLM_PROMPT";
+        };
+    };
+
+    behaviors {
+        backspace_mod: backspace_mod {
+            compatible = "zmk,behavior-tap-dance";
+            label = "BACKSPACE_MOD";
+            #binding-cells = <0>;
+            bindings = <&lt 2 BACKSPACE>, <&kp BACKSPACE>;
+        };
+
+        german_ae: german_ae {
+            compatible = "zmk,behavior-mod-morph";
+            label = "GERMAN_AE";
+            bindings = <&kp A>, <&kp RA(A)>;
+
+            #binding-cells = <0>;
+            mods = <(MOD_LALT)>;
+        };
+
+        german_ue: german_ue {
+            compatible = "zmk,behavior-mod-morph";
+            label = "GERMAN_UE";
+            bindings = <&kp U>, <&kp RA(U)>;
+
+            #binding-cells = <0>;
+            mods = <(MOD_LALT)>;
+        };
+
+        german_oe: german_oe {
+            compatible = "zmk,behavior-mod-morph";
+            label = "GERMAN_OE";
+            bindings = <&kp O>, <&kp RA(O)>;
+
+            #binding-cells = <0>;
+            mods = <(MOD_LALT)>;
+        };
+
+        german_ss: german_ss {
+            compatible = "zmk,behavior-mod-morph";
+            label = "GERMAN_SS";
+            bindings = <&kp S>, <&kp RA(S)>;
+
+            #binding-cells = <0>;
+            mods = <(MOD_LALT)>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        colemak_base {
+            bindings = <
+&mt ESCAPE Q     &kp W           &kp F        &kp P             &kp B        &kp J      &kp L              &kp U        &kp Y            &mt UNDER MINUS
+&mt LEFT_META A  &mt LEFT_ALT R  &mt LCTRL S  &mt LEFT_SHIFT T  &kp G        &kp M      &mt RIGHT_SHIFT N  &mt RCTRL E  &mt RIGHT_ALT I  &mt RIGHT_GUI O
+&lt 2 Z          &kp X           &kp C        &kp D             &kp V        &kp SLASH  &kp K              &kp H        &mt COLON COMMA  &lt 2 DOT
+                                              &mo 1             &kp SPACE    &mo 3      &lt 1 RET
+            >;
+        };
+
+        symbol {
+            bindings = <
+&kp HASH            &kp AT              &kp LESS_THAN         &kp GREATER_THAN       &kp TILDE           &kp MINUS  &kp LEFT_BRACE                    &kp RIGHT_BRACE              &kp GRAVE                   &kp COLON
+&mt LEFT_GUI CARET  &mt LEFT_ALT EQUAL  &mt LCTRL UNDERSCORE  &mt LEFT_SHIFT DOLLAR  &kp ASTERISK        &kp PLUS   &mt RIGHT_SHIFT LEFT_PARENTHESIS  &mt RCTRL RIGHT_PARENTHESIS  &mt RIGHT_ALT LEFT_BRACKET  &mt RIGHT_GUI RIGHT_BRACKET
+&kp BACKSLASH       &kp PIPE            &kp PRCNT             &kp SEMI               &kp SINGLE_QUOTE    &kp DQT    &kp EXCL                          &kp AMPS                     &kp UNDER                   &kp SLASH
+                                                              &trans                 &trans              &trans     &trans
+            >;
+        };
+
+        number-and-fn {
+            bindings = <
+&kp N9             &kp N5       &kp N0         &kp NUMBER_3       &kp N7    &kp N6  &kp NUMBER_2          &kp NUMBER_1       &kp NUMBER_4             &kp N8
+&mt LEFT_GUI EXCL  &mt LALT AT  &mt LCTRL SQT  &mt LEFT_SHIFT F4  &trans    &trans  &mt RIGHT_SHIFT HOME  &mt RCTRL PAGE_UP  &mt RIGHT_ALT PAGE_DOWN  &mt RIGHT_GUI END
+&kp F1             &kp F2       &kp F3         &kp F4             &kp F5    &kp F6  &kp F7                &kp F8             &kp F11                  &kp F12
+                                               &trans             &trans    &trans  &trans
+            >;
+        };
+
+        Arrows_wm {
+            bindings = <
+&to 0    &kp LG(LS(N5))  &kp UP_ARROW  &kp LG(LS(NUMBER_3))  &trans         &kp LG(LS(NUMBER_6))  &kp LG(LS(NUMBER_2))  &kp LG(LS(NUMBER_1))  &kp LG(LS(NUMBER_4))  &kp LG(LS(N8))
+&kp F13  &kp LEFT        &kp DOWN      &kp RIGHT             &kp F14        &kp LG(NUMBER_6)      &kp LG(NUMBER_2)      &kp LG(NUMBER_1)      &kp LG(NUMBER_4)      &kp LG(N8)
+&kp F15  &trans          &trans        &trans                &kp F16        &kp N0                &kp N1                &kp N2                &kp N3                &none
+                                       &trans                &key_repeat    &trans                &trans
+            >;
+        };
+
+        settings {
+            bindings = <
+&to 0  &none  &none       &bt BT_SEL 0  &bt BT_SEL 1    &bt BT_SEL 2  &bt BT_SEL 3  &none  &none  &kp A
+&none  &none  &none       &none         &none           &none         &none         &none  &none  &none
+&none  &none  &bt BT_CLR  &none         &tog 0          &to 0         &none         &none  &none  &studio_unlock
+                          &none         &none           &none         &none
+            >;
+        };
+
+        numpad {
+            bindings = <
+&trans  &trans  &trans  &trans  &trans    &kp KP_DIVIDE  &kp N7  &kp N8  &kp N9  &kp KP_MULTIPLY
+&trans  &trans  &trans  &trans  &trans    &trans         &kp N4  &kp N5  &kp N6  &kp KP_MINUS
+&trans  &trans  &trans  &trans  &trans    &trans         &kp N1  &kp N2  &kp N3  &kp KP_PLUS
+                        &trans  &trans    &trans         &kp N0
+            >;
+        };
+    };
+};

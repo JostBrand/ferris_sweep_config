@@ -120,15 +120,6 @@
         };
     };
 
-    macros {
-        llm_prompt: llm_prompt {
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            bindings = <&kp LS(RET) &kp I &kp M &kp P &kp R &kp O &kp V &kp E &kp SPACE &kp T &kp H &kp I &kp S &kp SPACE &kp T &kp E &kp X &kp T &kp SPACE &kp A &kp N &kp D &kp SPACE &kp M &kp A &kp K &kp E &kp SPACE &kp I &kp T &kp SPACE &kp C &kp O &kp N &kp C &kp I &kp S &kp E &kp LC(RET)>;
-            label = "LLM_PROMPT";
-        };
-    };
-
     behaviors {
         backspace_mod: backspace_mod {
             compatible = "zmk,behavior-tap-dance";
@@ -172,6 +163,17 @@
             #binding-cells = <0>;
             mods = <(MOD_LALT)>;
         };
+
+        shift_tap: shift_tap {
+            compatible = "zmk,behavior-hold-tap";
+            label = "SHIFT_TAP";
+            bindings = <&kp>, <&kp>;
+
+            #binding-cells = <2>;
+            tapping-term-ms = <250>;
+            quick-tap-ms = <0>;
+            flavor = "tap-preferred";
+        };
     };
 
     keymap {
@@ -179,10 +181,10 @@
 
         colemak_base {
             bindings = <
-&mt ESCAPE Q     &kp W           &kp F        &kp P             &kp B        &kp J      &kp L              &kp U        &kp Y            &mt UNDER MINUS
-&mt LEFT_META A  &mt LEFT_ALT R  &mt LCTRL S  &mt LEFT_SHIFT T  &kp G        &kp M      &mt RIGHT_SHIFT N  &mt RCTRL E  &mt RIGHT_ALT I  &mt RIGHT_GUI O
-&lt 2 Z          &kp X           &kp C        &kp D             &kp V        &kp SLASH  &kp K              &kp H        &mt COLON COMMA  &lt 2 DOT
-                                              &mo 1             &kp SPACE    &mo 3      &lt 1 RET
+&mt ESCAPE Q     &kp W           &kp F        &kp P                    &kp B        &kp J      &kp L                     &kp U        &kp Y            &mt UNDER MINUS
+&mt LEFT_META A  &mt LEFT_ALT R  &mt LCTRL S  &shift_tap LEFT_SHIFT T  &kp G        &kp M      &shift_tap RIGHT_SHIFT N  &mt RCTRL E  &mt RIGHT_ALT I  &mt RIGHT_GUI O
+&lt 2 Z          &kp X           &kp C        &kp D                    &kp V        &kp SLASH  &kp K                     &kp H        &mt COLON COMMA  &lt 2 DOT
+                                              &mo 1                    &kp SPACE    &mo 3      &lt 1 RET
             >;
         };
 

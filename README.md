@@ -75,7 +75,7 @@ Combos are positional and mostly active on layers 0-3 unless noted. The combos n
 
 ## Mouse & media
 
-- Mouse emulation lives on the Arrows / WM layer: Z/X/C/V-ish keys move the pointer (UP/LEFT/DOWN on the left bottom row, RIGHT on the left thumb), the right half scrolls (`SCRL_UP`/`SCRL_DOWN`) and wheels (`WH_UP`/`WH_DOWN`). Enabled by `CONFIG_ZMK_POINTING=y`.
+- Mouse emulation lives on the Arrows / WM layer: Z/X/C/V-ish keys move the pointer (UP/LEFT/DOWN on the left bottom row, RIGHT on the left thumb), the right half scrolls (`SCRL_UP`/`SCRL_DOWN`) and clicks (left/right mouse button). Enabled by `CONFIG_ZMK_POINTING=y`.
 - Media keys are on the settings layer: play/pause, previous/next song, volume up/down, mute.
 
 ## The LLM prompt macro

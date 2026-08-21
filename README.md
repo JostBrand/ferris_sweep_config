@@ -95,9 +95,19 @@ Note: once ZMK Studio manages the keymap, subsequent changes in `cradio.keymap` 
 
 ## Build
 
+### With Nix (recommended)
+
 ```bash
-west build -d build/left  -b nice_nano@2//zmk -- -DSHIELD=cradio_left
-west build -d build/right -b nice_nano@2//zmk -- -DSHIELD=cradio_right
+nix build .#firmware        # builds both halves -> result/zmk_left.uf2, result/zmk_right.uf2
+nix run .#flash             # interactive copy to the controller drives
+nix run .#update            # bump ZMK to latest main + refresh the deps hash
 ```
 
-Firmware tracks ZMK `main` (bleeding edge) intentionally — `config/west.yml` and the CI workflow are deliberately unpinned.
+The flake is based on [zmk-nix](https://github.com/lilyinstarlight/zmk-nix) and builds exactly the same sources as CI. `config/west.yml` pins ZMK `main` and the Zephyr 4.1 zmk fork to specific commits (with branch comments) so nix builds are reproducible — run `nix run .#update` to ride bleeding edge deliberately and re-lock the `zephyrDepsHash`.
+
+### With west (manual)
+
+```bash
+west build -d build/left  -b nice_nano@2//zmk -- -DZMK_CONFIG=$PWD/config -DSHIELD=cradio_left
+west build -d build/right -b nice_nano@2//zmk -- -DZMK_CONFIG=$PWD/config -DSHIELD=cradio_right
+```

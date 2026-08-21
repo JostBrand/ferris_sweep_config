@@ -4,7 +4,7 @@ ZMK firmware configuration for a [Ferris Sweep](https://github.com/davidphilipba
 
 ## Hardware
 
-- Board: `nice_nano_v2`
+- Board: `nice_nano@2//zmk` (nice!nano v2)
 - Shield: `cradio` (left/right)
 - Layout: Colemak-DH, 34 keys (3x5 + 3 thumbs per half)
 
@@ -96,8 +96,8 @@ Note: once ZMK Studio manages the keymap, subsequent changes in `cradio.keymap` 
 ## Build
 
 ```bash
-west build -d build/left  -b nice_nano_v2 -- -DSHIELD=cradio_left
-west build -d build/right -b nice_nano_v2 -- -DSHIELD=cradio_right
+west build -d build/left  -b nice_nano@2//zmk -- -DSHIELD=cradio_left
+west build -d build/right -b nice_nano@2//zmk -- -DSHIELD=cradio_right
 ```
 
 Firmware tracks ZMK `main` (bleeding edge) intentionally — `config/west.yml` and the CI workflow are deliberately unpinned.

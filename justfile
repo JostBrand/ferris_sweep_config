@@ -12,6 +12,10 @@ fast:
 flash:
     nix run .#flash
 
+# build DFU packages for serial flashing (when the UF2 drive is blocked)
+dfu:
+    ./scripts/make-dfu.sh
+
 # bump ZMK to latest main and refresh the west deps hash
 update:
     nix run .#update

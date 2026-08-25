@@ -124,7 +124,14 @@ Caveats:
 
 - `usbipd bind` needs admin rights once per device; `usbipd attach` doesn't.
 - If the company enforces device control at the USB *enumeration* level (Defender for Endpoint device control, DLP agent), `usbipd list` will already be empty — then storage passthrough is blocked regardless of WSL.
-- **Fallback that usually works even then**: serial DFU. A single tap of the reset button puts the Adafruit bootloader into DFU mode over USB **serial** (not storage, so storage policies don't apply). Flash with `adafruit-nrfutil dfu serial -pkg firmware.zip` (convert the UF2 via `uf2conv.py` first), or from WSL after `usbipd attach`.
+- **Fallback that usually works even then**: serial DFU. Double-tap reset puts the Adafruit bootloader into DFU mode exposing a USB **serial** port (plus the drive) — storage policies don't apply to serial. `just dfu` packages the built UF2s as DFU zips (`scripts/make-dfu.sh`), then flash with:
+
+  ```
+  adafruit-nrfutil dfu serial -pkg zmk_left.zip -p COM7 -b 115200   # Windows
+  adafruit-nrfutil dfu serial -pkg zmk_left.zip -p /dev/ttyACM0 -b 115200  # Linux/WSL
+  ```
+
+  `adafruit-nrfutil` is a plain `pip install --user adafruit-nrfutil` (no admin). The DFU zips land next to the built UF2s (`.zmk-workspace/build/{left,right}/zmk_{left,right}.zip`).
 - No-mount alternative for keymap tweaks only: ZMK Studio over BLE.
 
 ## Build

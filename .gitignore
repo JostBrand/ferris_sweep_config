@@ -2,3 +2,4 @@ result
 result-*
 .zmk-workspace/
 .zmk-workspace-cache.*
+.zmk-dfu-tools/

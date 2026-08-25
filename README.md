@@ -134,6 +134,14 @@ Caveats:
   `adafruit-nrfutil` is a plain `pip install --user adafruit-nrfutil` (no admin). The DFU zips land next to the built UF2s (`.zmk-workspace/build/{left,right}/zmk_{left,right}.zip`).
 - No-mount alternative for keymap tweaks only: ZMK Studio over BLE.
 
+## Multiple keyboards
+
+ZMK derives the BLE address from each chip's factory-programmed ID (nRF52 FICR `DEVICEADDR`, see Zephyr's nRF5 controller), so two identical keyboards **never conflict on address** — both can be paired to the same host without action on your part. What *does* need differentiating is the advertised name:
+
+- **Set a unique name per keyboard** in `build.yaml` (`-DCONFIG_ZMK_KEYBOARD_NAME="bigfoot-<place>"` + matching `artifact-name`); one pair of entries per physical keyboard. This prevents ambiguous pairing (e.g. Windows refusing a second device with an identical name).
+- Locally, build for a specific keyboard with `just build bigfoot-work` (default name is `bigfoot` from `cradio.conf`). Renaming does **not** reset host pairings — the BLE address stays the same, only the advertised name changes.
+- **Pair each keyboard's halves one at a time** (power only one pair during first bonding) so a central never bonds with the other keyboard's peripheral; afterwards the bond is sticky.
+
 ## Build
 
 ### Fast local iteration (recommended)

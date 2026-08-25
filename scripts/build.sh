@@ -98,8 +98,16 @@ build_part() {
         -DSHIELD="cradio_$part" $cmake_args
 }
 
-build_part left  build/left  "-S studio-rpc-usb-uart" "-DCONFIG_ZMK_STUDIO=y"
-build_part right build/right "" ""
+# Optional per-keyboard name override (default comes from config/cradio.conf).
+# Use e.g. ZMK_KEYBOARD_NAME=bigfoot-work or `just build bigfoot-work` when
+# building for a specific physical keyboard.
+NAME_ARGS=""
+if [ -n "${ZMK_KEYBOARD_NAME:-}" ]; then
+    NAME_ARGS="-DCONFIG_ZMK_KEYBOARD_NAME=\"$ZMK_KEYBOARD_NAME\""
+fi
+
+build_part left  build/left  "-S studio-rpc-usb-uart" "-DCONFIG_ZMK_STUDIO=y $NAME_ARGS"
+build_part right build/right "" "$NAME_ARGS"
 
 # tmpfs mode: persist the deps (not the build dirs) when the cache is missing
 # or the manifest changed; quick iterations in between skip this.

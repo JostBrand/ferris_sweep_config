@@ -11,7 +11,14 @@
   outputs = { self, nixpkgs, zmk-nix }: let
     forAllSystems = nixpkgs.lib.genAttrs (nixpkgs.lib.attrNames zmk-nix.packages);
   in {
-    packages = forAllSystems (system: rec {
+    packages = forAllSystems (system: let
+      westDeps = zmk-nix.legacyPackages.${system}.fetchZephyrDeps {
+        name = "firmware-west-deps";
+        src = nixpkgs.lib.sourceFilesBySuffices self [ ".yml" ];
+        westRoot = "config";
+        hash = "sha256-777sDty25V5VbWgXjYKpy1NEW/rWJEihU7DRdqfk30I=";
+      };
+    in rec {
       default = firmware;
 
       firmware = zmk-nix.legacyPackages.${system}.buildSplitKeyboard {
@@ -22,6 +29,7 @@
         board = "nice_nano@2//zmk";
         shield = "cradio_%PART%";
 
+        inherit westDeps;
         zephyrDepsHash = "sha256-777sDty25V5VbWgXjYKpy1NEW/rWJEihU7DRdqfk30I=";
 
         enableZmkStudio = true;

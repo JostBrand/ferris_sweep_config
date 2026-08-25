@@ -94,6 +94,39 @@ ZMK Studio support is enabled on the left (central) half only, per the ZMK docs:
 
 Note: once ZMK Studio manages the keymap, subsequent changes in `cradio.keymap` are ignored until "Restore Stock Settings" is triggered from Studio.
 
+## Flashing on the go (Windows / WSL)
+
+On a Windows laptop where the OS only accepts BitLocker-encrypted external storage, WSL2 + [usbipd-win](https://github.com/dorssel/usbipd-win) usually still works: the bootloader drive is **detached from Windows** and handed to WSL, so the BitLocker removable-storage policy never sees it.
+
+```powershell
+# one-time (admin): install usbipd-win, then
+winget install --interactive --exact dorssel.usbipd-win
+
+# per device, admin:
+usbipd list                        # note the busid of the keyboard half (in bootloader mode)
+usbipd bind --busid <busid>
+
+# non-admin:
+usbipd attach --wsl --busid <busid>
+```
+
+In WSL (needs a WSL command prompt open so the VM stays alive):
+
+```bash
+lsusb                                        # device should be listed
+ls /dev/sd*                                  # bootloader appears as a disk
+sudo mkdir -p /mnt/flash && sudo mount /dev/sdX /mnt/flash
+sudo cp build/left/zephyr/zmk.uf2 /mnt/flash/   # half resets and flashes
+sudo umount /mnt/flash
+```
+
+Caveats:
+
+- `usbipd bind` needs admin rights once per device; `usbipd attach` doesn't.
+- If the company enforces device control at the USB *enumeration* level (Defender for Endpoint device control, DLP agent), `usbipd list` will already be empty — then storage passthrough is blocked regardless of WSL.
+- **Fallback that usually works even then**: serial DFU. A single tap of the reset button puts the Adafruit bootloader into DFU mode over USB **serial** (not storage, so storage policies don't apply). Flash with `adafruit-nrfutil dfu serial -pkg firmware.zip` (convert the UF2 via `uf2conv.py` first), or from WSL after `usbipd attach`.
+- No-mount alternative for keymap tweaks only: ZMK Studio over BLE.
+
 ## Build
 
 ### Fast local iteration (recommended)

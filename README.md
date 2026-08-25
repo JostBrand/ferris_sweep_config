@@ -104,6 +104,13 @@ nix develop -c ./scripts/build.sh
 
 Uses a persistent west workspace in `.zmk-workspace/` (gitignored): the first run fetches zmk + zephyr + modules once, afterwards keymap/config changes only recompile (~1-3 min instead of re-fetching and re-hashing the whole tree). Firmware lands in `.zmk-workspace/build/{left,right}/zephyr/zmk.uf2`. Run `nix run .#update` first if you bumped ZMK. On a heavily loaded machine, consider pushing and using CI (5 min) for validation instead of the local build.
 
+The script handles two host-specific quirks:
+
+- **Parallelism** — the machine has 40 cores but limited free RAM (k8s uses ~33G of 62G), so ninja's default `nproc+2` parallelism OOM-kills compilers (silent build failures). `ZMK_PARALLEL` (default 8) caps it.
+- **Python resolution** — the nixpkgs `west` wrapper prepends the bare python dir to PATH, which breaks the nanopb protobuf plugin (`No module named 'google'`). The script runs west via `python3 -m west` to avoid this.
+
+Optional: `ZMK_TMPFS=1` moves the workspace to RAM (`/dev/shm`), with the fetched deps cached as `.zmk-workspace-cache.tar.*` on disk so a reboot doesn't lose the fetch — builds get notably faster on a slow disk. Needs ~10 GiB free in `/dev/shm`.
+
 ### Reproducible nix build
 
 ```bash

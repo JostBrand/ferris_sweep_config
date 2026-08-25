@@ -1,3 +1,4 @@
 result
 result-*
 .zmk-workspace/
+.zmk-workspace-cache.*

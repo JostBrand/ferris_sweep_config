@@ -96,7 +96,15 @@ Note: once ZMK Studio manages the keymap, subsequent changes in `cradio.keymap` 
 
 ## Build
 
-### With Nix (recommended)
+### Fast local iteration (recommended)
+
+```bash
+nix develop -c ./scripts/build.sh
+```
+
+Uses a persistent west workspace in `.zmk-workspace/` (gitignored): the first run fetches zmk + zephyr + modules once, afterwards keymap/config changes only recompile (~1-3 min instead of re-fetching and re-hashing the whole tree). Firmware lands in `.zmk-workspace/build/{left,right}/zephyr/zmk.uf2`. Run `nix run .#update` first if you bumped ZMK. On a heavily loaded machine, consider pushing and using CI (5 min) for validation instead of the local build.
+
+### Reproducible nix build
 
 ```bash
 nix build .#firmware        # builds both halves -> result/zmk_left.uf2, result/zmk_right.uf2
@@ -104,7 +112,7 @@ nix run .#flash             # interactive copy to the controller drives
 nix run .#update            # bump ZMK to latest main + refresh the deps hash
 ```
 
-The flake is based on [zmk-nix](https://github.com/lilyinstarlight/zmk-nix) and builds exactly the same sources as CI. `config/west.yml` pins ZMK `main` and the Zephyr 4.1 zmk fork to specific commits (with branch comments) so nix builds are reproducible — run `nix run .#update` to ride bleeding edge deliberately and re-lock the `zephyrDepsHash`.
+The flake is based on [zmk-nix](https://github.com/lilyinstarlight/zmk-nix) and builds exactly the same sources as CI. Note that the west-deps fetch is scoped to `west.yml`, so keymap edits don't re-trigger it — but the derivation still re-hashes the fetched tree on every change, which is slow on loaded machines. `config/west.yml` pins ZMK `main` and the Zephyr 4.1 zmk fork to specific commits (with branch comments) so nix builds are reproducible — run `nix run .#update` to ride bleeding edge deliberately and re-lock the `zephyrDepsHash`.
 
 ### With west (manual)
 

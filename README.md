@@ -99,10 +99,13 @@ Note: once ZMK Studio manages the keymap, subsequent changes in `cradio.keymap` 
 ### Fast local iteration (recommended)
 
 ```bash
-nix develop -c ./scripts/build.sh
+just build   # incremental build (both halves)
+just fast    # same, but RAM-backed workspace (fast on slow disks)
+just flash   # copy firmware to the controller drives
+just update  # bump ZMK to latest main + refresh deps hash
 ```
 
-Uses a persistent west workspace in `.zmk-workspace/` (gitignored): the first run fetches zmk + zephyr + modules once, afterwards keymap/config changes only recompile (~1-3 min instead of re-fetching and re-hashing the whole tree). Firmware lands in `.zmk-workspace/build/{left,right}/zephyr/zmk.uf2`. Run `nix run .#update` first if you bumped ZMK. On a heavily loaded machine, consider pushing and using CI (5 min) for validation instead of the local build.
+`just build` is a wrapper around `nix develop -c ./scripts/build.sh` (tmpfs mode via `ZMK_TMPFS=1`).
 
 The script handles two host-specific quirks:
 

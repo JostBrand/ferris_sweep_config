@@ -23,7 +23,7 @@ Umlauts (ä/ö/ü/ß) are handled host-side via the AutoHotkey script in [`ahk/u
 
 ## Home row mods
 
-The home row uses ZMK's "timeless" positional hold-taps (`hml`/`hmr` in `cradio.keymap`) instead of plain `&mt`:
+The home row uses ZMK's "timeless" positional hold-taps (`hml`/`hmr`/`hmr_ralt` in `cradio.keymap`) instead of plain `&mt`:
 
 - `balanced` flavor, `require-prior-idle-ms = <125>`, `tapping-term-ms = <250>`, `quick-tap-ms = <175>`, `hold-trigger-on-release`
 - Mods only trigger when the held key is combined with an opposite-hand key (`hold-trigger-key-positions`), so same-hand rolls don't fire mods accidentally. With `balanced` + `hold-trigger-on-release`, the hold only resolves when the mod key is still held at the *release* of the chorded key — normal typing rolls stay taps.
@@ -34,12 +34,13 @@ Tradeoffs:
 
 - Same-hand chords (e.g. Ctrl+Shift on S+T) don't work; use the right-hand Shift on N.
 - Deliberate chords need a short pause (~125 ms idle) before the mod key, and the mod key must stay held until the chorded key is released (the mod applies at release, not press).
-- AltGr (for umlauts) lives on the right thumb, not on I, so the home-row mods can never leak an AltGr into the AHK script.
+- Holding a mod key and tapping an opposite-hand key always produces a chord; the 100 ms prior-idle suppresses most accidental cases mid-word.
+- `hmr_ralt` (Right Alt on I) additionally allows U/O on the same hand so AltGr+o/u (ö/ü) keep working via the AHK script.
 - If right-half mods don't trigger after flashing, ZMK's positional mirroring on the peripheral side may need the trigger lists adjusted (see the keymap).
 
 ## Umlaute & AHK
 
-Umlauts are host-side: hold the **right thumb** (AltGr) and tap a/o/u/s for ä/ö/ü/ß; Shift or CapsLock gives uppercase. The right thumb is a `hold-preferred` AltGr key (`&hm_altgr RALT RET`, tap = Enter) — it activates immediately, and because AltGr no longer lives on the I key, normal typing can never fire a stray RAlt into the AHK script (typing "is" can't become ß anymore).
+Umlauts are host-side: hold Right Alt (AltGr, the I key) and tap a/o/u/s for ä/ö/ü/ß; Shift or CapsLock gives uppercase.
 
 The script includes an anti-stuck guard: if ZMK loses an Alt release (BLE event loss or a home-row-mod roll), the OS keeps AltGr logically pressed and every a/o/u/s would type umlauts. After each hotkey the script therefore releases AltGr at the OS level whenever the key is no longer physically held. Hotkeys use explicit `>!` / `>!+` variants instead of the `*` wildcard so Ctrl/Win misfires from the home-row mods don't trigger umlauts.
 

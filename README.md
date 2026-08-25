@@ -12,8 +12,8 @@ ZMK firmware configuration for a [Ferris Sweep](https://github.com/davidphilipba
 
 | Index | Name        | Studio name   | Purpose                                        |
 |-------|-------------|---------------|------------------------------------------------|
-| 0     | QWERTY      | Colemak       | Colemak-DH base layer                          |
-| 1     | SYM         | Symbols       | Symbols (`&mo SYM` on left thumb)              |
+| 0     | BASE        | Colemak       | Colemak-DH base layer                          |
+| 1     | SYM         | Symbols       | Symbols (`&lt SYM RET` on the inner right thumb) |
 | 2     | SYM_2       | Numbers & Fn  | Numbers + function keys (`&lt SYM_2` on Z/DOT) |
 | 3     | FNC         | Arrows / WM   | Arrows, window-manager shortcuts, F-keys, mouse emulation |
 | 4     | FNC_2       | Settings      | Bluetooth, media keys, Studio unlock           |
@@ -28,19 +28,23 @@ The home row uses ZMK's "timeless" positional hold-taps (`hml`/`hmr`/`hmr_ralt` 
 - `balanced` flavor, `require-prior-idle-ms = <125>`, `tapping-term-ms = <250>`, `quick-tap-ms = <175>`, `hold-trigger-on-release`
 - Mods only trigger when the held key is combined with an opposite-hand key (`hold-trigger-key-positions`), so same-hand rolls don't fire mods accidentally. With `balanced` + `hold-trigger-on-release`, the hold only resolves when the mod key is still held at the *release* of the chorded key — normal typing rolls stay taps.
 - Do **not** switch these to `tap-unless-interrupted`: it sends the tap on press (holding a home-row key auto-repeats the letter) and turns any overlapping roll into a chord (e.g. typing "is" fires RAlt+s → the AHK script types ß).
-- Uniform timing scheme across hold-taps and combos: HRM 125 ms, `&lt` 100 ms, `&mt` 80 ms, combos 80 ms (with exceptions below), sticky layers 3 s.
+- Uniform timing scheme across hold-taps and combos: HRM 125 ms, `&lt` 100 ms, combos 80/150 ms (see below), sticky layers 3 s. `&mt` is only used for tap/tap pairs now (COLON+COMMA, UNDER+MINUS), so it has no idle guard.
 
 Tradeoffs:
 
 - Same-hand chords (e.g. Ctrl+Shift on S+T) don't work; use the right-hand Shift on N.
 - Deliberate chords need a short pause (~125 ms idle) before the mod key, and the mod key must stay held until the chorded key is released (the mod applies at release, not press).
 - Holding a mod key and tapping an opposite-hand key always produces a chord; the 100 ms prior-idle suppresses most accidental cases mid-word.
-- `hmr_ralt` (Right Alt on I) additionally allows U/O on the same hand so AltGr+o/u (ö/ü) keep working via the AHK script.
+- `hmr_ralt` (Right Alt on I) additionally allows U/O (positions 7/19) on the same hand so AltGr+o/u (ö/ü) keep working via the AHK script.
+- The SYM and SYM_2 layers reuse `hml`/`hmr` for their home-row mods, so they get the same positional misfire protection as the base layer (they previously used plain `&mt` with no guard).
 - If right-half mods don't trigger after flashing, ZMK's positional mirroring on the peripheral side may need the trigger lists adjusted (see the keymap).
 
 ## Umlaute & AHK
 
-Umlauts are host-side: hold Right Alt (AltGr, the I key) and tap a/o/u/s for ä/ö/ü/ß; Shift or CapsLock gives uppercase.
+Umlauts are host-side: hold Right Alt (AltGr) and tap a/o/u/s for ä/ö/ü/ß; Shift or CapsLock gives uppercase. AltGr is available in two places while you evaluate them:
+
+- **Home row** — `hmr_ralt` on I (original setup).
+- **Left thumb** — `hm_altgr` on the outer left thumb key (position 30, hold-only: tap is `&none`). This displaces the redundant `&mo SYM` there; the main SYM access (`&lt SYM RET` on the inner right thumb) is unchanged. Experiment to see whether moving AltGr off the home row eliminates the leaked-umlaut misfires the AHK anti-stuck guard works around. ö/ü are cross-hand chords from the left thumb; ä/ß are same-hand but thumb+pinky/ring rarely rolls.
 
 The script includes an anti-stuck guard: if ZMK loses an Alt release (BLE event loss or a home-row-mod roll), the OS keeps AltGr logically pressed and every a/o/u/s would type umlauts. After each hotkey the script therefore releases AltGr at the OS level whenever the key is no longer physically held. Hotkeys use explicit `>!` / `>!+` variants instead of the `*` wildcard so Ctrl/Win misfires from the home-row mods don't trigger umlauts.
 
@@ -48,7 +52,7 @@ Suspend/resume the hotkeys with Win+Alt+G.
 
 ## Combos
 
-Combos are positional and mostly active on layers 0-3 unless noted. The combos node sets `combo-term = <50>` (forgiving deliberate rolls) and `require-prior-idle-ms = <80>` (prevents accidental cut/copy/paste while typing fast). Exceptions: `esc` is exempt (`0`) so it fires instantly after typing, and `improve_prompt` uses `150` to guard against accidental macro injection.
+Combos are positional and mostly active on layers 0-3 unless noted. Devicetree does **not** inherit properties from the `combos` node to its children, so every combo sets `timeout-ms` and `require-prior-idle-ms` explicitly via the `ZMK_COMBO_C`/`ZMK_COMBO_A` macros (an earlier version set them on the parent node and they were silently dropped, leaving all combos unguarded). Destructive combos (backspace, delete, word-delete, alt_ret) use a 150 ms idle guard, the rest 80 ms. Exceptions: `esc` is exempt (`0`) so it fires instantly after typing, and `improve_prompt` uses `150` to guard against accidental macro injection.
 
 | Combo            | Keys (layer 0)          | Output                    |
 |------------------|-------------------------|---------------------------|
@@ -66,14 +70,12 @@ Combos are positional and mostly active on layers 0-3 unless noted. The combos n
 | alt_ret          | G + T                   | Enter                     |
 | capsword         | DOT + COMMA             | Caps Word (layer 0)       |
 | alt_tab          | M + N                   | Tab                       |
-| alt_semicolon    | P + B                   | `;`                       |
 | studio_unlock    | Z + A + Q               | Unlock ZMK Studio         |
 | sym_once         | Z + X                   | Sticky symbol layer (layer 0) |
 | undo             | V + SLASH               | Ctrl+Z                    |
 | redo             | SLASH + K               | Ctrl+Shift+Z              |
-| save             | W + F                   | Ctrl+S                    |
-| word_backspace   | B + J                   | Ctrl+Backspace            |
-| word_delete      | G + M                   | Ctrl+Delete               |
+| word_backspace   | W + F                   | Ctrl+Backspace            |
+| word_delete      | T + D                   | Ctrl+Delete               |
 
 ## Mouse & media
 

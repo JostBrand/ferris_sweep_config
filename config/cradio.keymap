@@ -9,166 +9,108 @@
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/pointing.h>
 
-#define QWERTY 0
+#define BASE   0
 #define SYM    1
 #define SYM_2  2
 #define FNC    3
 #define FNC_2  4
 #define NUMPAD 5
 
+// ZMK has no parent->child property inheritance: combos need timeout-ms and
+// require-prior-idle-ms set per combo, otherwise they silently fall back to
+// 50 ms / -1 (disabled) regardless of what the combos node says.
+//
+// combo_c: common variant (active on BASE..FNC).
+#define ZMK_COMBO_C(n, b, kp, i) \
+    n { bindings = <b>; key-positions = <kp>; layers = <BASE SYM SYM_2 FNC>; timeout-ms = <50>; require-prior-idle-ms = <i>; };
+
+// combo_a: "everywhere" variant (all layers, for Escape-style combos).
+#define ZMK_COMBO_A(n, b, kp, i) \
+    n { bindings = <b>; key-positions = <kp>; layers = <BASE SYM SYM_2 FNC FNC_2 NUMPAD>; timeout-ms = <50>; require-prior-idle-ms = <i>; };
+
 &mt {
+    // &mt is only used for tap/tap pairs (COLON+COMMA, UNDER+MINUS) where
+    // tap-preferred + a prior-idle guard would only delay the shifted side.
+    // Tap/tap resolution never depends on prior idle, so no guard is needed.
     tapping-term-ms = <250>;
     flavor = "tap-preferred";
-    require-prior-idle-ms = <80>;
 };
 
 &lt {
     require-prior-idle-ms = <100>;
 };
 
-&sk {
+&sl {
     release-after-ms = <3000>;
 };
 
 / {
     combos {
         compatible = "zmk,combos";
-        combo-term = <50>;
-        require-prior-idle-ms = <80>;
 
-        esc {
-            bindings = <&kp ESCAPE>;
-            key-positions = <0 1>;
-            layers = <QWERTY SYM SYM_2 FNC FNC_2 NUMPAD>;
-            require-prior-idle-ms = <0>;
-        };
-
-        cut {
-            bindings = <&kp LC(X)>;
-            key-positions = <21 22>;
-            layers = <QWERTY SYM SYM_2 FNC>;
-        };
-
-        copy {
-            bindings = <&kp LC(C)>;
-            key-positions = <22 23>;
-            layers = <QWERTY SYM SYM_2 FNC>;
-        };
-
-        paste {
-            bindings = <&kp LC(V)>;
-            key-positions = <23 24>;
-            layers = <QWERTY SYM SYM_2 FNC>;
-        };
-
-        to_default {
-            bindings = <&to QWERTY>;
-            key-positions = <0 9>;
-            layers = <SYM SYM_2 FNC FNC_2 NUMPAD>;
-        };
-
+        // Destructive / high-risk combos get 150 ms idle, the rest 80 ms.
+        // Idle guard: the combo key pair must be pressed after that much
+        // typing silence, so fast rolls can't fire them accidentally.
+        esc { bindings = <&kp ESCAPE>; key-positions = <0 1>; layers = <BASE SYM SYM_2 FNC FNC_2 NUMPAD>; timeout-ms = <50>; require-prior-idle-ms = <0>; };
+        ZMK_COMBO_C(cut,            &kp LC(X),       21 22,  80)
+        ZMK_COMBO_C(copy,           &kp LC(C),       22 23,  80)
+        ZMK_COMBO_C(paste,          &kp LC(V),       23 24,  80)
+        ZMK_COMBO_A(to_default,     &to BASE,        0 9,    80)
         alt_quotes {
             bindings = <&kp DOUBLE_QUOTES>;
             key-positions = <5 6>;
-            layers = <QWERTY>;
+            layers = <BASE>;
+            timeout-ms = <50>;
+            require-prior-idle-ms = <80>;
         };
-
         numpad {
             bindings = <&to NUMPAD>;
             key-positions = <7 8 9>;
-            layers = <QWERTY>;
+            layers = <BASE>;
+            timeout-ms = <50>;
+            require-prior-idle-ms = <80>;
         };
-
-        backspace {
-            bindings = <&kp BACKSPACE>;
-            key-positions = <3 2>;
-            layers = <QWERTY SYM SYM_2 FNC>;
-        };
-
-        delete {
-            bindings = <&kp DELETE>;
-            key-positions = <6 7>;
-            layers = <QWERTY SYM SYM_2 FNC>;
-        };
-
+        ZMK_COMBO_C(backspace,      &kp BACKSPACE,   3 2,    150)
+        ZMK_COMBO_C(delete,         &kp DELETE,      6 7,    150)
         settings {
             bindings = <&to FNC_2>;
             key-positions = <0 1 2>;
-            layers = <QWERTY>;
+            layers = <BASE>;
+            timeout-ms = <50>;
+            require-prior-idle-ms = <80>;
         };
-
         improve_prompt {
             bindings = <&llm_prompt>;
             key-positions = <30 31>;
-            layers = <QWERTY>;
+            layers = <BASE>;
+            timeout-ms = <50>;
             require-prior-idle-ms = <150>;
         };
-
-        alt_ret {
-            bindings = <&kp RET>;
-            key-positions = <14 13>;
-            layers = <QWERTY SYM SYM_2 FNC>;
-        };
-
+        ZMK_COMBO_C(alt_ret,        &kp RET,         14 13,  150)
         capsword {
             bindings = <&caps_word>;
             key-positions = <29 28>;
-            layers = <QWERTY>;
+            layers = <BASE>;
+            timeout-ms = <50>;
+            require-prior-idle-ms = <80>;
         };
-
-        alt_tab {
-            bindings = <&kp TAB>;
-            key-positions = <15 16>;
-            layers = <QWERTY SYM SYM_2 FNC>;
-        };
-
-        alt_semicolon {
-            bindings = <&kp SEMI>;
-            key-positions = <3 4>;
-            layers = <QWERTY SYM SYM_2 FNC>;
-        };
-
-        studio_unlock {
-            bindings = <&studio_unlock>;
-            key-positions = <20 10 0>;
-            layers = <QWERTY SYM SYM_2 FNC>;
-        };
-
+        ZMK_COMBO_C(alt_tab,        &kp TAB,         15 16,  80)
+        ZMK_COMBO_A(studio_unlock,  &studio_unlock,  20 10 0, 80)
         sym_once {
-            bindings = <&sk SYM>;
+            // Was &sk SYM: &sk is a sticky *key* and wraps &kp, so this
+            // emitted HID keycode 1 instead of the SYM layer.
+            bindings = <&sl SYM>;
             key-positions = <20 21>;
-            layers = <QWERTY>;
+            layers = <BASE>;
+            timeout-ms = <50>;
+            require-prior-idle-ms = <80>;
         };
-
-        undo {
-            bindings = <&kp LC(Z)>;
-            key-positions = <24 25>;
-            layers = <QWERTY SYM SYM_2 FNC>;
-        };
-
-        redo {
-            bindings = <&kp LS(LC(Z))>;
-            key-positions = <25 26>;
-            layers = <QWERTY SYM SYM_2 FNC>;
-        };
-
-        save {
-            bindings = <&kp LC(S)>;
-            key-positions = <1 2>;
-            layers = <QWERTY SYM SYM_2 FNC>;
-        };
-
-        word_backspace {
-            bindings = <&kp LC(BACKSPACE)>;
-            key-positions = <4 5>;
-            layers = <QWERTY SYM SYM_2 FNC>;
-        };
-
-        word_delete {
-            bindings = <&kp LC(DELETE)>;
-            key-positions = <14 15>;
-            layers = <QWERTY SYM SYM_2 FNC>;
-        };
+        ZMK_COMBO_C(undo,           &kp LC(Z),       24 25,  80)
+        ZMK_COMBO_C(redo,           &kp LS(LC(Z)),   25 26,  80)
+        // Word-deletion pair: F+W sits one column left of the backspace combo
+        // (F+P), T+D is its left/right mirror on the home row.
+        ZMK_COMBO_C(word_backspace, &kp LC(BACKSPACE), 1 2,  150)
+        ZMK_COMBO_C(word_delete,    &kp LC(DELETE),  14 15,  150)
     };
 
     macros {
@@ -198,12 +140,6 @@
     };
 
     behaviors {
-        backspace_mod: backspace_mod {
-            compatible = "zmk,behavior-tap-dance";
-            #binding-cells = <0>;
-            bindings = <&lt SYM_2 BACKSPACE>, <&kp BACKSPACE>;
-        };
-
         hml: home_row_mod_left {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
@@ -238,22 +174,43 @@
             tapping-term-ms = <250>;
             quick-tap-ms = <175>;
             bindings = <&kp>, <&kp>;
-            hold-trigger-key-positions = <0 1 2 3 4 10 11 12 13 14 20 21 22 23 24 30 31 17 19>;
+            // Left-hand keys + U(7)/O(19) on the same hand so AltGr+u/o
+            // (ü/ö via the AHK script) can chord on the right hand.
+            hold-trigger-key-positions = <0 1 2 3 4 10 11 12 13 14 20 21 22 23 24 30 31 7 19>;
             hold-trigger-on-release;
             display-name = "Home Row Mod Right AltGr";
+        };
+
+        // Thumb AltGr experiment: same timing as the home-row mods, but on the
+        // left thumb (position 30, previously the redundant &mo SYM) so
+        // home-row rolls can never leak an umlaut. The main SYM access stays
+        // on the right thumb (&lt SYM RET). Tap does nothing (&none) — the key
+        // is hold-only. Positional guard stays off: the thumb is deliberately
+        // chorded with either hand — ö/ü are cross-hand, ä/ß are same-hand but
+        // thumb vs pinky/ring rarely rolls.
+        hm_altgr: home_row_mod_altgr_thumb {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            require-prior-idle-ms = <125>;
+            tapping-term-ms = <250>;
+            quick-tap-ms = <175>;
+            bindings = <&kp>, <&none>;
+            hold-trigger-on-release;
+            display-name = "AltGr Thumb (experiment)";
         };
     };
 
     keymap {
         compatible = "zmk,keymap";
 
-        colemak_base {
+        base_layer {
             display-name = "Colemak";
             bindings = <
 &kp Q            &kp W           &kp F        &kp P             &kp B        &kp J      &kp L              &kp U        &kp Y            &mt UNDER MINUS
-&hml LEFT_META A  &hml LEFT_ALT R  &hml LCTRL S  &hml LEFT_SHIFT T  &kp G        &kp M      &hmr RIGHT_SHIFT N  &hmr RCTRL E  &hmr_ralt RALT I  &hmr RIGHT_GUI O
+&hml LGUI A  &hml LALT R  &hml LCTRL S  &hml LSHFT T  &kp G        &kp M      &hmr RSHFT N  &hmr RCTRL E  &hmr_ralt RALT I  &hmr RGUI O
 &lt SYM_2 Z          &kp X           &kp C        &kp D             &kp V        &kp SLASH  &kp K              &kp H        &mt COLON COMMA  &lt SYM_2 DOT
-                                              &mo SYM           &kp SPACE    &mo FNC    &lt SYM RET
+                                              &hm_altgr RALT 0    &kp SPACE    &mo FNC    &lt SYM RET
             >;
         };
 
@@ -261,7 +218,7 @@
             display-name = "Symbols";
             bindings = <
 &kp HASH            &kp AT              &kp LESS_THAN         &kp GREATER_THAN       &kp TILDE           &kp MINUS  &kp LEFT_BRACE                    &kp RIGHT_BRACE              &kp GRAVE                   &kp COLON
-&mt LEFT_GUI CARET  &mt LEFT_ALT EQUAL  &mt LCTRL UNDERSCORE  &mt LEFT_SHIFT DOLLAR  &kp ASTERISK        &kp PLUS   &mt RIGHT_SHIFT LEFT_PARENTHESIS  &mt RCTRL RIGHT_PARENTHESIS  &mt RIGHT_ALT LEFT_BRACKET  &mt RIGHT_GUI RIGHT_BRACKET
+&hml LGUI CARET  &hml LALT EQUAL  &hml LCTRL UNDERSCORE  &hml LSHFT DOLLAR  &kp ASTERISK        &kp PLUS   &hmr RSHFT LEFT_PARENTHESIS  &hmr RCTRL RIGHT_PARENTHESIS  &hmr RALT LEFT_BRACKET  &hmr RGUI RIGHT_BRACKET
 &kp BACKSLASH       &kp PIPE            &kp PRCNT             &kp SEMI               &kp SINGLE_QUOTE    &kp DQT    &kp EXCL                          &kp AMPS                     &kp UNDER                   &kp SLASH
                                                               &trans                 &trans              &trans     &trans
             >;
@@ -271,7 +228,7 @@
             display-name = "Numbers & Fn";
             bindings = <
 &kp N9             &kp N5       &kp N0         &kp NUMBER_3       &kp N7    &kp N6  &kp NUMBER_2          &kp NUMBER_1       &kp NUMBER_4             &kp N8
-&mt LEFT_GUI EXCL  &mt LALT AT  &mt LCTRL SQT  &mt LEFT_SHIFT F4  &trans    &trans  &mt RIGHT_SHIFT HOME  &mt RCTRL PAGE_UP  &mt RIGHT_ALT PAGE_DOWN  &mt RIGHT_GUI END
+&hml LGUI EXCL  &hml LALT AT  &hml LCTRL SQT  &hml LSHFT F4  &trans    &trans  &hmr RSHFT HOME  &hmr RCTRL PAGE_UP  &hmr RALT PAGE_DOWN  &hmr RGUI END
 &kp F1             &kp F2       &kp F3         &kp F4             &kp F5    &kp F6  &kp F7                &kp F8             &kp F11                  &kp F12
                                                &trans             &trans    &trans  &trans
             >;
@@ -280,7 +237,7 @@
         arrows_wm {
             display-name = "Arrows / WM";
             bindings = <
-&to QWERTY    &kp LG(LS(N5))  &kp UP_ARROW  &kp LG(LS(NUMBER_3))  &trans         &kp LG(LS(NUMBER_6))  &kp LG(LS(NUMBER_2))  &kp LG(LS(NUMBER_1))  &kp LG(LS(NUMBER_4))  &kp LG(LS(N8))
+&to BASE      &kp LG(LS(N5))  &kp UP_ARROW  &kp LG(LS(NUMBER_3))  &trans         &kp LG(LS(NUMBER_6))  &kp LG(LS(NUMBER_2))  &kp LG(LS(NUMBER_1))  &kp LG(LS(NUMBER_4))  &kp LG(LS(N8))
 &kp F13  &kp LEFT        &kp DOWN      &kp RIGHT             &kp F14        &kp LG(NUMBER_6)      &kp LG(NUMBER_2)      &kp LG(NUMBER_1)      &kp LG(NUMBER_4)      &kp LG(N8)
 &kp F15  &mmv MOVE_UP     &mmv MOVE_LEFT  &mmv MOVE_DOWN       &kp F16        &kp N0                &msc SCRL_UP          &msc SCRL_DOWN        &mkp LCLK            &mkp RCLK
                                        &mmv MOVE_RIGHT &key_repeat    &trans                &trans
@@ -290,9 +247,9 @@
         settings {
             display-name = "Settings";
             bindings = <
-&to QWERTY  &none  &none       &bt BT_SEL 0  &bt BT_SEL 1    &bt BT_SEL 2  &bt BT_SEL 3  &none  &none  &kp A
+&to BASE  &none  &none       &bt BT_SEL 0  &bt BT_SEL 1    &bt BT_SEL 2  &bt BT_SEL 3  &none  &none  &none
 &kp C_PLAY_PAUSE  &kp C_PREVIOUS  &kp C_NEXT  &kp C_VOL_UP  &kp C_VOL_DN  &kp C_MUTE  &none  &none  &none  &none
-&none  &none  &bt BT_CLR  &none         &tog QWERTY          &to QWERTY         &none         &none  &none  &studio_unlock
+&none  &none  &bt BT_CLR  &none         &none         &to BASE         &none         &none  &none  &studio_unlock
                           &none         &none           &none         &none
             >;
         };
@@ -303,7 +260,7 @@
 &trans  &trans  &trans  &trans  &trans    &kp KP_DIVIDE  &kp N7  &kp N8  &kp N9  &kp KP_MULTIPLY
 &trans  &trans  &trans  &trans  &trans    &trans         &kp N4  &kp N5  &kp N6  &kp KP_MINUS
 &trans  &trans  &trans  &trans  &trans    &trans         &kp N1  &kp N2  &kp N3  &kp KP_PLUS
-                        &to QWERTY  &trans    &trans         &kp N0
+                        &to BASE    &trans    &trans         &kp N0
             >;
         };
     };

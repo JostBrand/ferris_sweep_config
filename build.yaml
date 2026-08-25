@@ -21,19 +21,19 @@ include:
   - board: nice_nano@2//zmk
     shield: cradio_left
     snippet: studio-rpc-usb-uart
-    cmake-args: "-DCONFIG_ZMK_STUDIO=y -DCONFIG_ZMK_KEYBOARD_NAME=\"bigfoot\""
+    cmake-args: "-DCONFIG_ZMK_STUDIO=y -DCONFIG_ZMK_KEYBOARD_NAME='\"bigfoot\"'"
     artifact-name: bigfoot_left
   - board: nice_nano@2//zmk
     shield: cradio_right
-    cmake-args: "-DCONFIG_ZMK_KEYBOARD_NAME=\"bigfoot\""
+    cmake-args: "-DCONFIG_ZMK_KEYBOARD_NAME='\"bigfoot\"'"
     artifact-name: bigfoot_right
 
   - board: nice_nano@2//zmk
     shield: cradio_left
     snippet: studio-rpc-usb-uart
-    cmake-args: "-DCONFIG_ZMK_STUDIO=y -DCONFIG_ZMK_KEYBOARD_NAME=\"bigfoot-work\""
+    cmake-args: "-DCONFIG_ZMK_STUDIO=y -DCONFIG_ZMK_KEYBOARD_NAME='\"bigfoot-work\"'"
     artifact-name: bigfoot-work_left
   - board: nice_nano@2//zmk
     shield: cradio_right
-    cmake-args: "-DCONFIG_ZMK_KEYBOARD_NAME=\"bigfoot-work\""
+    cmake-args: "-DCONFIG_ZMK_KEYBOARD_NAME='\"bigfoot-work\"'"
     artifact-name: bigfoot-work_right

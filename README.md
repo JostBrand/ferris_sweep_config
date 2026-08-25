@@ -25,14 +25,15 @@ Umlauts (ä/ö/ü/ß) are handled host-side via the AutoHotkey script in [`ahk/u
 
 The home row uses ZMK's "timeless" positional hold-taps (`hml`/`hmr`/`hmr_ralt` in `cradio.keymap`) instead of plain `&mt`:
 
-- `balanced` flavor, `require-prior-idle-ms = <150>`, `tapping-term-ms = <280>`, `quick-tap-ms = <175>`
-- Mods only trigger when the held key is combined with an opposite-hand key (`hold-trigger-key-positions` + `hold-trigger-on-release`), so same-hand rolls no longer fire mods accidentally.
-- Uniform timing scheme across hold-taps and combos: HRM 150 ms, `&lt` 100 ms, `&mt` 80 ms, combos 80 ms (with exceptions below), sticky layers 3 s.
+- `tap-unless-interrupted` flavor, `require-prior-idle-ms = <100>`, `tapping-term-ms = <240>`, `quick-tap-ms = <175>`
+- Mods only trigger when the held key is combined with an opposite-hand key (`hold-trigger-key-positions`), so same-hand rolls don't fire mods accidentally. The hold resolves on the *press* of the opposite-hand key, so chords like Shift+I appear instantly without a release wait.
+- Uniform timing scheme across hold-taps and combos: HRM 100 ms, `&lt` 100 ms, `&mt` 80 ms, combos 80 ms (with exceptions below), sticky layers 3 s.
 
 Tradeoffs:
 
 - Same-hand chords (e.g. Ctrl+Shift on S+T) don't work; use the right-hand Shift on N.
-- Deliberate chords need a short pause (~150 ms idle) before the mod key.
+- Deliberate chords need a short pause (~100 ms idle) before the mod key.
+- Holding a mod key and tapping an opposite-hand key always produces a chord; the 100 ms prior-idle suppresses most accidental cases mid-word.
 - `hmr_ralt` (Right Alt on I) additionally allows U/O on the same hand so AltGr+o/u (ö/ü) keep working via the AHK script.
 - If right-half mods don't trigger after flashing, ZMK's positional mirroring on the peripheral side may need the trigger lists adjusted (see the keymap).
 

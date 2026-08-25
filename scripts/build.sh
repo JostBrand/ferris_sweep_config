@@ -10,8 +10,22 @@
 # Environment overrides:
 #   ZMK_WORKSPACE  workspace location (default: ./.zmk-workspace)
 #   ZMK_BOARD      board to build for (default: nice_nano@2//zmk)
+#   ZMK_PARALLEL   parallel compile jobs (default: 8)
+#
+# The box has 40 cores but limited free RAM (k8s uses ~33G of 62G): ninja's
+# default nproc+2 parallelism OOM-kills compilers (silent build failures).
+# Cap it to a RAM-safe value.
+#
+# west is invoked via `python3 -m west` because the nixpkgs `west` wrapper
+# prepends the bare python dir to PATH for all children; the nanopb protobuf
+# plugin then resolves `env python3` to a python without google.protobuf and
+# fails with "No module named 'google'".
 
 set -euo pipefail
+
+export CMAKE_BUILD_PARALLEL_LEVEL="${ZMK_PARALLEL:-8}"
+
+west() { python3 -m west "$@"; }
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 WORKSPACE="${ZMK_WORKSPACE:-$REPO_ROOT/.zmk-workspace}"

@@ -1,12 +1,12 @@
 # ZMK build shortcuts. See scripts/build.sh for details.
 
 # build firmware (both halves), incremental. Optional: keyboard name,
-# e.g. `just build bigfoot-work` to build for a specific physical keyboard.
-build name="bigfoot":
+# e.g. `just build blackcradio-work` to build for a specific physical keyboard.
+build name="blackcradio":
     ZMK_KEYBOARD_NAME="{{name}}" nix develop -c ./scripts/build.sh
 
 # build firmware with RAM-backed workspace (fast on slow disks)
-fast name="bigfoot":
+fast name="blackcradio":
     ZMK_TMPFS=1 ZMK_KEYBOARD_NAME="{{name}}" nix develop -c ./scripts/build.sh
 
 # copy firmware to the controller drives

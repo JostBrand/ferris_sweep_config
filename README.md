@@ -17,9 +17,9 @@ ZMK firmware configuration for a [Ferris Sweep](https://github.com/davidphilipba
 | 2     | SYM_2       | Numbers & Fn  | Numbers + function keys (`&lt SYM_2` on Z/DOT) |
 | 3     | FNC         | Arrows / WM   | Arrows, window-manager shortcuts, F-keys, mouse emulation |
 | 4     | FNC_2       | Settings      | Bluetooth, media keys, Studio unlock           |
-| 5     | NUMPAD      | Numpad        | Numpad on the right half (via combo), left thumb exits |
+| 5     | NUMPAD      | Numpad        | Numpad on the right half (via combo), left thumb exits; ä/ö/ü on the A/O/U keys |
 
-Umlauts (ä/ö/ü/ß) are handled host-side via the AutoHotkey script in [`ahk/umlaute.ahk`](ahk/umlaute.ahk) — see [Umlaute & AHK](#umlaute--ahk).
+Umlauts (ä/ö/ü) are handled host-side via the AutoHotkey script in [`ahk/umlaute.ahk`](ahk/umlaute.ahk) — see [Umlaute & AHK](#umlaute--ahk). ß is no longer used (Swiss keyboarding) and not wired to any key.
 
 ## Home row mods
 
@@ -28,7 +28,7 @@ The home row uses ZMK's "timeless" positional hold-taps (`hml`/`hmr`/`hmr_ralt` 
 - `balanced` flavor, `require-prior-idle-ms = <125>`, `tapping-term-ms = <250>`, `quick-tap-ms = <175>`, `hold-trigger-on-release`
 - Mods only trigger when the held key is combined with an opposite-hand key (`hold-trigger-key-positions`), so same-hand rolls don't fire mods accidentally. With `balanced` + `hold-trigger-on-release`, the hold only resolves when the mod key is still held at the *release* of the chorded key — normal typing rolls stay taps.
 - Do **not** switch these to `tap-unless-interrupted`: it sends the tap on press (holding a home-row key auto-repeats the letter) and turns any overlapping roll into a chord (e.g. typing "is" fires RAlt+s → the AHK script types ß).
-- Uniform timing scheme across hold-taps and combos: HRM 125 ms, `&lt` 100 ms, combos 80/150 ms (see below), sticky layers 3 s. `&mt` is only used for tap/tap pairs now (COLON+COMMA, UNDER+MINUS), so it has no idle guard.
+- Uniform timing scheme across hold-taps and combos: HRM 125 ms, `&lt` 100 ms, combos 30/80/150 ms (see below), sticky layers 3 s. `&mt` is only used for tap/tap pairs now (COLON+COMMA, UNDER+MINUS), so it has no idle guard.
 
 Tradeoffs:
 
@@ -41,10 +41,9 @@ Tradeoffs:
 
 ## Umlaute & AHK
 
-Umlauts are host-side: hold Right Alt (AltGr) and tap a/o/u/s for ä/ö/ü/ß; Shift or CapsLock gives uppercase. AltGr is available in two places while you evaluate them:
+Umlauts are host-side: hold Right Alt (AltGr) and tap a/o/u for ä/ö/ü (s still yields ß, but it's no longer needed — Swiss keyboarding); Shift or CapsLock gives uppercase. AltGr lives on `hmr_ralt` (home row, I). A left-thumb `hm_altgr` hold-only experiment (outer left thumb, position 30) was reverted: the outer left thumb is back to `&mo SYM`.
 
-- **Home row** — `hmr_ralt` on I (original setup).
-- **Left thumb** — `hm_altgr` on the outer left thumb key (position 30, hold-only: tap is `&none`). This displaces the redundant `&mo SYM` there; the main SYM access (`&lt SYM RET` on the inner right thumb) is unchanged. Experiment to see whether moving AltGr off the home row eliminates the leaked-umlaut misfires the AHK anti-stuck guard works around. ö/ü are cross-hand chords from the left thumb; ä/ß are same-hand but thumb+pinky/ring rarely rolls.
+The NUMPAD layer has direct ä/ö/ü on the physical A/O/U keys: the `umlaut_a`/`umlaut_o`/`umlaut_u` macros tap AltGr+letter, which fires the same AHK hotkeys, so the case logic (Shift/CapsLock) works identically. On that layer this displaces the transparent A and the unused N8/KP_MINUS.
 
 The script includes an anti-stuck guard: if ZMK loses an Alt release (BLE event loss or a home-row-mod roll), the OS keeps AltGr logically pressed and every a/o/u/s would type umlauts. After each hotkey the script therefore releases AltGr at the OS level whenever the key is no longer physically held. Hotkeys use explicit `>!` / `>!+` variants instead of the `*` wildcard so Ctrl/Win misfires from the home-row mods don't trigger umlauts.
 
@@ -52,7 +51,7 @@ Suspend/resume the hotkeys with Win+Alt+G.
 
 ## Combos
 
-Combos are positional and mostly active on layers 0-3 unless noted. Devicetree does **not** inherit properties from the `combos` node to its children, so every combo sets `timeout-ms` and `require-prior-idle-ms` explicitly via the `ZMK_COMBO_C`/`ZMK_COMBO_A` macros (an earlier version set them on the parent node and they were silently dropped, leaving all combos unguarded). Destructive combos (backspace, delete, word-delete, alt_ret) use a 150 ms idle guard, the rest 80 ms. Exceptions: `esc` is exempt (`0`) so it fires instantly after typing, and `improve_prompt` uses `150` to guard against accidental macro injection.
+Combos are positional and mostly active on layers 0-3 unless noted. Devicetree does **not** inherit properties from the `combos` node to its children, so every combo sets `timeout-ms` and `require-prior-idle-ms` explicitly via the `ZMK_COMBO_C`/`ZMK_COMBO_A` macros (an earlier version set them on the parent node and they were silently dropped, leaving all combos unguarded). Destructive combos (backspace, delete, word-delete) use a 150 ms idle guard, the rest 80 ms. Exceptions: `esc` is exempt (`0`) so it fires instantly after typing, `alt_ret` uses `30` so typing straight into the Enter combo still fires it, and `improve_prompt` uses `150` to guard against accidental macro injection.
 
 | Combo            | Keys (layer 0)          | Output                    |
 |------------------|-------------------------|---------------------------|

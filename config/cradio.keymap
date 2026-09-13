@@ -86,7 +86,9 @@
             timeout-ms = <50>;
             require-prior-idle-ms = <150>;
         };
-        ZMK_COMBO_C(alt_ret,        &kp RET,         14 13,  150)
+        // RET is not destructive; keep the idle guard minimal so fast typing
+        // straight into the combo still fires it.
+        ZMK_COMBO_C(alt_ret,        &kp RET,         14 13,  30)
         capsword {
             bindings = <&caps_word>;
             key-positions = <29 28>;
@@ -137,6 +139,34 @@
                 , <&kp LC(RET)>
                 ;
         };
+
+        // ä/ö/ü for the numpad layer: tap AltGr+letter, which the AHK script
+        // (umlaute.ahk) turns into the umlaut — layout-independent, and the
+        // script's Shift/CapsLock case logic applies. 30 ms timing keeps the
+        // RAlt-down → letter ordering intact over BLE (same as llm_prompt).
+        umlaut_a: umlaut_a {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <30>;
+            tap-ms = <30>;
+            bindings = <&macro_press &kp RALT &macro_tap &kp A &macro_release &kp RALT>;
+        };
+
+        umlaut_o: umlaut_o {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <30>;
+            tap-ms = <30>;
+            bindings = <&macro_press &kp RALT &macro_tap &kp O &macro_release &kp RALT>;
+        };
+
+        umlaut_u: umlaut_u {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <30>;
+            tap-ms = <30>;
+            bindings = <&macro_press &kp RALT &macro_tap &kp U &macro_release &kp RALT>;
+        };
     };
 
     behaviors {
@@ -181,24 +211,6 @@
             display-name = "Home Row Mod Right AltGr";
         };
 
-        // Thumb AltGr experiment: same timing as the home-row mods, but on the
-        // left thumb (position 30, previously the redundant &mo SYM) so
-        // home-row rolls can never leak an umlaut. The main SYM access stays
-        // on the right thumb (&lt SYM RET). Tap does nothing (&none) — the key
-        // is hold-only. Positional guard stays off: the thumb is deliberately
-        // chorded with either hand — ö/ü are cross-hand, ä/ß are same-hand but
-        // thumb vs pinky/ring rarely rolls.
-        hm_altgr: home_row_mod_altgr_thumb {
-            compatible = "zmk,behavior-hold-tap";
-            #binding-cells = <2>;
-            flavor = "balanced";
-            require-prior-idle-ms = <125>;
-            tapping-term-ms = <250>;
-            quick-tap-ms = <175>;
-            bindings = <&kp>, <&none>;
-            hold-trigger-on-release;
-            display-name = "AltGr Thumb (experiment)";
-        };
     };
 
     keymap {
@@ -210,7 +222,7 @@
 &kp Q            &kp W           &kp F        &kp P             &kp B        &kp J      &kp L              &kp U        &kp Y            &mt UNDER MINUS
 &hml LGUI A  &hml LALT R  &hml LCTRL S  &hml LSHFT T  &kp G        &kp M      &hmr RSHFT N  &hmr RCTRL E  &hmr_ralt RALT I  &hmr RGUI O
 &lt SYM_2 Z          &kp X           &kp C        &kp D             &kp V        &kp SLASH  &kp K              &kp H        &mt COLON COMMA  &lt SYM_2 DOT
-                                              &hm_altgr RALT 0    &kp SPACE    &mo FNC    &lt SYM RET
+                                              &mo SYM    &kp SPACE    &mo FNC    &lt SYM RET
             >;
         };
 
@@ -256,9 +268,11 @@
 
         numpad {
             display-name = "Numpad";
+            // ä/ö/ü sit on the A/O/U letter positions; u/o displace N8 and
+            // KP_MINUS (unused), a was transparent. ß intentionally absent.
             bindings = <
-&trans  &trans  &trans  &trans  &trans    &kp KP_DIVIDE  &kp N7  &kp N8  &kp N9  &kp KP_MULTIPLY
-&trans  &trans  &trans  &trans  &trans    &trans         &kp N4  &kp N5  &kp N6  &kp KP_MINUS
+&trans  &trans  &trans  &trans  &trans    &kp KP_DIVIDE  &kp N7  &umlaut_u  &kp N9  &kp KP_MULTIPLY
+&umlaut_a  &trans  &trans  &trans  &trans    &trans         &kp N4  &kp N5  &kp N6  &umlaut_o
 &trans  &trans  &trans  &trans  &trans    &trans         &kp N1  &kp N2  &kp N3  &kp KP_PLUS
                         &to BASE    &trans    &trans         &kp N0
             >;

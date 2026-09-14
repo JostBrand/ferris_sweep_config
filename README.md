@@ -16,10 +16,10 @@ ZMK firmware configuration for a [Ferris Sweep](https://github.com/davidphilipba
 | 1     | SYM         | Symbols       | Symbols (`&lt SYM RET` on the inner right thumb) |
 | 2     | SYM_2       | Numbers & Fn  | Numbers + function keys (`&lt SYM_2` on Z/DOT) |
 | 3     | FNC         | Arrows / WM   | Arrows, window-manager shortcuts, F-keys, mouse emulation |
-| 4     | FNC_2       | Settings      | Bluetooth, media keys, Studio unlock           |
+| 4     | FNC_2       | Settings      | Bluetooth, media keys, Studio unlock; top right types `a` to check the active BT profile |
 | 5     | NUMPAD      | Numpad        | Numpad on the right half (via combo), left thumb exits; ä/ö/ü on the A/O/U keys |
 
-Umlauts (ä/ö/ü) are handled host-side via the AutoHotkey script in [`ahk/umlaute.ahk`](ahk/umlaute.ahk) — see [Umlaute & AHK](#umlaute--ahk). ß is no longer used (Swiss keyboarding) and not wired to any key.
+Umlauts (ä/ö/ü) are direct German-layout keys — the firmware emits German HID usages (`config/keys_de.h`), so **every host must run a stock German keyboard layout**; see [Layout: German](#layout-german). ß is no longer used (Swiss keyboarding) and not wired to any key.
 
 ## Home row mods
 
@@ -27,7 +27,7 @@ The home row uses ZMK's "timeless" positional hold-taps (`hml`/`hmr`/`hmr_ralt` 
 
 - `balanced` flavor, `require-prior-idle-ms = <125>`, `tapping-term-ms = <250>`, `quick-tap-ms = <175>`, `hold-trigger-on-release`
 - Mods only trigger when the held key is combined with an opposite-hand key (`hold-trigger-key-positions`), so same-hand rolls don't fire mods accidentally. With `balanced` + `hold-trigger-on-release`, the hold only resolves when the mod key is still held at the *release* of the chorded key — normal typing rolls stay taps.
-- Do **not** switch these to `tap-unless-interrupted`: it sends the tap on press (holding a home-row key auto-repeats the letter) and turns any overlapping roll into a chord (e.g. typing "is" fires RAlt+s → the AHK script types ß).
+- Do **not** switch these to `tap-unless-interrupted`: it sends the tap on press (holding a home-row key auto-repeats the letter) and turns any overlapping roll into a chord (e.g. typing "is" fires RAlt+s → AltGr symbol like §).
 - Uniform timing scheme across hold-taps and combos: HRM 125 ms, `&lt` 100 ms, combos 30/80/150 ms (see below), sticky layers 3 s. `&mt` is only used for tap/tap pairs now (COLON+COMMA, UNDER+MINUS), so it has no idle guard.
 
 Tradeoffs:
@@ -35,17 +35,18 @@ Tradeoffs:
 - Same-hand chords (e.g. Ctrl+Shift on S+T) don't work; use the right-hand Shift on N.
 - Deliberate chords need a short pause (~125 ms idle) before the mod key, and the mod key must stay held until the chorded key is released (the mod applies at release, not press).
 - Holding a mod key and tapping an opposite-hand key always produces a chord; the 100 ms prior-idle suppresses most accidental cases mid-word.
-- `hmr_ralt` (Right Alt on I) additionally allows U/O (positions 7/19) on the same hand so AltGr+o/u (ö/ü) keep working via the AHK script.
+- `hmr_ralt` (Right Alt on I) additionally allows U/O (positions 7/19) on the same hand, so AltGr symbols (€ µ § …) can be typed with a right-hand letter chord.
 - The SYM and SYM_2 layers reuse `hml`/`hmr` for their home-row mods, so they get the same positional misfire protection as the base layer (they previously used plain `&mt` with no guard).
 - If right-half mods don't trigger after flashing, ZMK's positional mirroring on the peripheral side may need the trigger lists adjusted (see the keymap).
 
-## Umlaute & AHK
+## Layout: German
 
-Umlauts are host-side: hold Right Alt (AltGr) and tap a/o/u for ä/ö/ü (s still yields ß, but it's no longer needed — Swiss keyboarding); Shift or CapsLock gives uppercase. AltGr lives on `hmr_ralt` (home row, I). A left-thumb `hm_altgr` hold-only experiment (outer left thumb, position 30) was reverted: the outer left thumb is back to `&mo SYM`.
+The firmware emits **German-layout HID usages** — every character binding uses the `DE_*` codes from `config/keys_de.h`, so a host set to a stock German layout produces the same characters in the same physical positions (Colemak letter positions unchanged; note the QWERTZ Y/Z usage swap handled by `DE_Y`/`DE_Z`).
 
-The NUMPAD layer has direct ä/ö/ü on the physical A/O/U keys: the `umlaut_a`/`umlaut_o`/`umlaut_u` macros tap AltGr+letter, which fires the same AHK hotkeys, so the case logic (Shift/CapsLock) works identically. On that layer this displaces the transparent A and the unused N8/KP_MINUS.
-
-The script includes an anti-stuck guard: if ZMK loses an Alt release (BLE event loss or a home-row-mod roll), the OS keeps AltGr logically pressed and every a/o/u/s would type umlauts. After each hotkey the script therefore releases AltGr at the OS level whenever the key is no longer physically held. Hotkeys use explicit `>!` / `>!+` variants instead of the `*` wildcard so Ctrl/Win misfires from the home-row mods don't trigger umlauts.
+- The header was generated with [zmk-locale-generator](https://github.com/joelspadin/zmk-locale-generator) (v1.5.0, CLDR `de-t-k0-windows`) and is committed to the repo; regenerate it (e.g. for Swiss `de-CH`) when the layout target changes. `flake.nix` includes `.h` files in its source filter, so both local nix builds and CI pick it up.
+- **All paired hosts must use the German layout** (Linux XKB `de`, Windows "Deutsch", phones/tablets likewise). ZMK cannot switch output layout per host — pointing the keyboard at a US-layout host scrambles y/z and all symbols.
+- Umlauts are ordinary keys: NUMPAD has direct ä/ö/ü on the physical A/O/U keys (Shift/CapsLock gives uppercase). The old host-side `ahk/umlaute.ahk` workaround (AltGr+a/o/u via AutoHotkey, with its anti-stuck-RAlt guard) is retired — no host-side tooling is needed anymore.
+- AltGr (hold on `hmr_ralt`, I) is now only needed for AltGr symbols like € µ § ² ³. A leaked RAlt now produces stray `@`/`µ` instead of umlauts.
 
 Suspend/resume the hotkeys with Win+Alt+G.
 
@@ -140,8 +141,9 @@ Caveats:
 
 ZMK derives the BLE address from each chip's factory-programmed ID (nRF52 FICR `DEVICEADDR`, see Zephyr's nRF5 controller), so two identical keyboards **never conflict on address** — both can be paired to the same host without action on your part. What *does* need differentiating is the advertised name:
 
-- **Set a unique name per keyboard** in `build.yaml` (`-DCONFIG_ZMK_KEYBOARD_NAME="bigfoot-<place>"` + matching `artifact-name`); one pair of entries per physical keyboard. This prevents ambiguous pairing (e.g. Windows refusing a second device with an identical name).
-- Locally, build for a specific keyboard with `just build bigfoot-work` (default name is `bigfoot` from `cradio.conf`). Renaming does **not** reset host pairings — the BLE address stays the same, only the advertised name changes.
+- **The name lives in ONE place**: `config/cradio.conf` (`CONFIG_ZMK_KEYBOARD_NAME="blackcradio"`). Both CI (`build.yaml`) and local builds (`just build`) read it — don't pass `-DCONFIG_ZMK_KEYBOARD_NAME` anywhere else.
+- **Only a second physical keyboard needs an override**: add a pair of entries in `build.yaml` with `-DCONFIG_ZMK_KEYBOARD_NAME="blackcradio-<place>"` + matching `artifact-name` (and build it locally with `just build blackcradio-work`). This prevents ambiguous pairing (e.g. Windows refusing a second device with an identical name).
+- Renaming does **not** reset host pairings — the BLE address stays the same, only the advertised name changes. Hosts cache the old name: remove and re-pair the keyboard (or restart Bluetooth) to see the new one.
 - **Pair each keyboard's halves one at a time** (power only one pair during first bonding) so a central never bonds with the other keyboard's peripheral; afterwards the bond is sticky.
 
 ## Build

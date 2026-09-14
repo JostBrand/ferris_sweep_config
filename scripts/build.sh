@@ -98,9 +98,10 @@ build_part() {
         -DSHIELD="cradio_$part" $cmake_args
 }
 
-# Optional per-keyboard name override (default comes from config/cradio.conf).
-# Use e.g. ZMK_KEYBOARD_NAME=bigfoot-work or `just build bigfoot-work` when
-# building for a specific physical keyboard.
+# Optional per-keyboard name override. The default name lives in ONE place:
+# config/cradio.conf (CONFIG_ZMK_KEYBOARD_NAME). Use e.g.
+# ZMK_KEYBOARD_NAME=blackcradio-work or `just build blackcradio-work` when
+# building for a second physical keyboard.
 NAME_ARGS=""
 if [ -n "${ZMK_KEYBOARD_NAME:-}" ]; then
     NAME_ARGS="-DCONFIG_ZMK_KEYBOARD_NAME=\"$ZMK_KEYBOARD_NAME\""

@@ -98,14 +98,15 @@ build_part() {
         -DSHIELD="cradio_$part" $cmake_args
 }
 
-# Optional per-keyboard name override. The default name lives in ONE place:
-# config/cradio.conf (CONFIG_ZMK_KEYBOARD_NAME). Use e.g.
-# ZMK_KEYBOARD_NAME=blackcradio-work or `just build blackcradio-work` when
-# building for a second physical keyboard.
-NAME_ARGS=""
-if [ -n "${ZMK_KEYBOARD_NAME:-}" ]; then
-    NAME_ARGS="-DCONFIG_ZMK_KEYBOARD_NAME=\"$ZMK_KEYBOARD_NAME\""
+# Per-keyboard name override. The default name lives in ONE place:
+# config/cradio.conf (CONFIG_ZMK_KEYBOARD_NAME) - read it here and always
+# pass it via -D, otherwise a stale CMakeCache value from a previous
+# per-keyboard build would win. Use e.g. ZMK_KEYBOARD_NAME=whitecradio or
+# `just build whitecradio` when building for a second physical keyboard.
+if [ -z "${ZMK_KEYBOARD_NAME:-}" ]; then
+    ZMK_KEYBOARD_NAME="$(sed -n 's/^CONFIG_ZMK_KEYBOARD_NAME="\(.*\)"$/\1/p' "$CONFIG_DIR/cradio.conf")"
 fi
+NAME_ARGS="-DCONFIG_ZMK_KEYBOARD_NAME=\"$ZMK_KEYBOARD_NAME\""
 
 build_part left  build/left  "-S studio-rpc-usb-uart" "-DCONFIG_ZMK_STUDIO=y $NAME_ARGS"
 build_part right build/right "" "$NAME_ARGS"

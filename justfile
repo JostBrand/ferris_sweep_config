@@ -10,10 +10,14 @@ build name="":
 fast name="":
     ZMK_TMPFS=1 ZMK_KEYBOARD_NAME="{{name}}" nix develop -c ./scripts/build.sh
 
+# copy built firmware to both halves (left first, then right);
+# optional: `just copy left` / `just copy right`
+alias copy := flash
+
 # flash both halves (left first, then right) via the UF2 bootloader drive;
 # optional: `just flash left` / `just flash right`
 flash part="both":
-    ./scripts/flash.sh {{part}}
+    ./scripts/flash.sh "{{part}}"
 
 # build DFU packages for serial flashing (when the UF2 drive is blocked)
 dfu:

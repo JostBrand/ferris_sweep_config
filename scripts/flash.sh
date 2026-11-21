@@ -51,9 +51,9 @@ find_drive() {
 mount_drive() {
     local dev="$1" out
     if command -v udisksctl >/dev/null 2>&1; then
-        echo "== mounting $dev via udisksctl"
+        echo "== mounting $dev via udisksctl" >&2
         if out="$(udisksctl mount -b "$dev" 2>&1)"; then
-            printf '%s\n' "$out" | sed -n 's/.* at \(.*\)\.?$/\1/p'
+            printf '%s\n' "$out" | sed -n '/ at /{ s/.* at //; s/\.$//; p; }'
             return 0
         fi
         echo "   udisksctl failed: $out" >&2

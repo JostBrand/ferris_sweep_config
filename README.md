@@ -168,9 +168,18 @@ ZMK derives the BLE address from each chip's factory-programmed ID (nRF52 FICR `
 ```bash
 just build   # incremental build (both halves)
 just fast    # same, but RAM-backed workspace (fast on slow disks)
-just flash   # copy firmware to the controller drives
+just copy    # copy built firmware to both halves (left, then right)
 just update  # bump ZMK to latest main + refresh deps hash
 ```
+
+After building, run `just copy` (an alias for `just flash`). Connect only the
+requested half over USB and double-tap its reset button when prompted. The
+helper detects the `nicenano` bootloader drive, mounts it with `udisksctl` if
+needed, copies that half's firmware, and waits for it to reboot before moving
+to the right half. If automatic mounting is unavailable, mount the drive
+manually and retry. To copy only one half, use `just copy left` or
+`just copy right`. Firmware is taken from the local workspace (including the
+RAM-backed workspace used by `just fast`); copying does not rebuild it.
 
 `just build` is a wrapper around `nix develop -c ./scripts/build.sh` (tmpfs mode via `ZMK_TMPFS=1`).
 

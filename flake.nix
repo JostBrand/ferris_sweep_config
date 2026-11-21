@@ -16,7 +16,7 @@
         name = "firmware-west-deps";
         src = nixpkgs.lib.sourceFilesBySuffices self [ ".yml" ];
         westRoot = "config";
-        hash = "sha256-777sDty25V5VbWgXjYKpy1NEW/rWJEihU7DRdqfk30I=";
+        hash = "sha256-1ZCYx36xVPjtE/fP3LVtfL0pA6nmDxHx+MJseDV6mLY=";
       };
     in rec {
       default = firmware;
@@ -30,7 +30,7 @@
         shield = "cradio_%PART%";
 
         inherit westDeps;
-        zephyrDepsHash = "sha256-777sDty25V5VbWgXjYKpy1NEW/rWJEihU7DRdqfk30I=";
+        zephyrDepsHash = "sha256-1ZCYx36xVPjtE/fP3LVtfL0pA6nmDxHx+MJseDV6mLY=";
 
         enableZmkStudio = true;
 

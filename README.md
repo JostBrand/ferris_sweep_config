@@ -18,24 +18,27 @@ ZMK firmware configuration for a [Ferris Sweep](https://github.com/davidphilipba
 | 3     | FNC         | Arrows / WM   | Arrows, window-manager shortcuts, F-keys, mouse emulation |
 | 4     | FNC_2       | Settings      | Bluetooth, media keys, Studio unlock; top right types `a` to check the active BT profile |
 | 5     | NUMPAD      | Numpad        | Numpad on the right half (via combo), left thumb exits; ä/ö/ü on the A/O/U keys |
+| 6     | UMLAUT      | Umlauts       | Momentary while I is held; a/o/u/s become the direct ä/ö/ü/ß keys, rest transparent |
+| 7     | GAME        | Game          | Base layer with home row mods and all holds stripped — for games (see [Game mode](#game-mode)) |
 
-Umlauts (ä/ö/ü) are direct German-layout keys — the firmware emits German HID usages (`config/keys_de.h`), so **every host must run a stock German keyboard layout**; see [Layout: German](#layout-german). ß is no longer used (Swiss keyboarding) and not wired to any key.
+Umlauts (ä/ö/ü) are direct German-layout keys — the firmware emits German HID usages (`config/keys_de.h`), so **every host must run a stock German keyboard layout**; see [Layout: German](#layout-german). ß is not used in prose (Swiss keyboarding), but the I-hold + s chord types it anyway for completeness.
 
 ## Home row mods
 
-The home row uses ZMK's "timeless" positional hold-taps (`hml`/`hmr`/`hmr_ralt` in `cradio.keymap`) instead of plain `&mt`:
+The home row uses ZMK's "timeless" positional hold-taps (`hml`/`hmr`/`hmr_uml` in `cradio.keymap`) instead of plain `&mt`:
 
 - `balanced` flavor, `require-prior-idle-ms = <125>`, `tapping-term-ms = <250>`, `quick-tap-ms = <175>`, `hold-trigger-on-release`
 - Mods only trigger when the held key is combined with an opposite-hand key (`hold-trigger-key-positions`), so same-hand rolls don't fire mods accidentally. With `balanced` + `hold-trigger-on-release`, the hold only resolves when the mod key is still held at the *release* of the chorded key — normal typing rolls stay taps.
-- Do **not** switch these to `tap-unless-interrupted`: it sends the tap on press (holding a home-row key auto-repeats the letter) and turns any overlapping roll into a chord (e.g. typing "is" fires RAlt+s → AltGr symbol like §).
+- Do **not** switch these to `tap-unless-interrupted`: it sends the tap on press (holding a home-row key auto-repeats the letter) and turns any overlapping roll into a chord (e.g. typing "is" fires the I-hold umlaut layer → ß).
 - Uniform timing scheme across hold-taps and combos: HRM 125 ms, `&lt` 100 ms, combos 30/80/150 ms (see below), sticky layers 3 s. `&mt` is only used for tap/tap pairs now (COLON+COMMA, UNDER+MINUS), so it has no idle guard.
 
 Tradeoffs:
 
 - Same-hand chords (e.g. Ctrl+Shift on S+T) don't work; use the right-hand Shift on N.
+- For games where held keys must stay letters, switch to the GAME layer instead — it strips the home row mods entirely (see [Game mode](#game-mode)).
 - Deliberate chords need a short pause (~125 ms idle) before the mod key, and the mod key must stay held until the chorded key is released (the mod applies at release, not press).
 - Holding a mod key and tapping an opposite-hand key always produces a chord; the 100 ms prior-idle suppresses most accidental cases mid-word.
-- `hmr_ralt` (Right Alt on I) additionally allows U/O (positions 7/19) on the same hand, so AltGr symbols (€ µ § …) can be typed with a right-hand letter chord.
+- `hmr_uml` (UMLAUT layer on I) additionally allows U/O (positions 7/19) on the same hand, so ü/ö chords work on the right hand. The hold side no longer sends real RAlt — stock German hosts map AltGr+letter to æ/↓/ø (Linux) or nothing (Windows), never to umlauts, and a leaked RAlt gave stray `@`/`µ`. A momentary layer cannot leak either.
 - The SYM and SYM_2 layers reuse `hml`/`hmr` for their home-row mods, so they get the same positional misfire protection as the base layer (they previously used plain `&mt` with no guard).
 - If right-half mods don't trigger after flashing, ZMK's positional mirroring on the peripheral side may need the trigger lists adjusted (see the keymap).
 
@@ -45,10 +48,21 @@ The firmware emits **German-layout HID usages** — every character binding uses
 
 - The header was generated with [zmk-locale-generator](https://github.com/joelspadin/zmk-locale-generator) (v1.5.0, CLDR `de-t-k0-windows`) and is committed to the repo; regenerate it (e.g. for Swiss `de-CH`) when the layout target changes. `flake.nix` includes `.h` files in its source filter, so both local nix builds and CI pick it up.
 - **All paired hosts must use the German layout** (Linux XKB `de`, Windows "Deutsch", phones/tablets likewise). ZMK cannot switch output layout per host — pointing the keyboard at a US-layout host scrambles y/z and all symbols.
-- Umlauts are ordinary keys: NUMPAD has direct ä/ö/ü on the physical A/O/U keys (Shift/CapsLock gives uppercase). The old host-side `ahk/umlaute.ahk` workaround (AltGr+a/o/u via AutoHotkey, with its anti-stuck-RAlt guard) is retired — no host-side tooling is needed anymore.
-- AltGr (hold on `hmr_ralt`, I) is now only needed for AltGr symbols like € µ § ² ³. A leaked RAlt now produces stray `@`/`µ` instead of umlauts.
+- Umlauts are ordinary keys: hold I and a/o/u/s become direct ä/ö/ü/ß (UMLAUT layer), and NUMPAD has direct ä/ö/ü on the physical A/O/U keys (Shift/CapsLock gives uppercase). The old host-side `ahk/umlaute.ahk` workaround (AltGr+a/o/u via AutoHotkey, with its anti-stuck-RAlt guard) is retired — no host-side tooling is needed anymore.
+- Real AltGr remains only on the SYM layer (`&hmr RALT DE_LBKT`) for AltGr symbols like € µ § ² ³. The base layer never sends RAlt, so the æ/↓/ø (Linux XKB level-3) or `@`/`µ` garbage a leaked RAlt produced is impossible.
+- `^` and `` ` `` are **dead keys** on a stock German layout, and firmware alone cannot fake a live char that works everywhere: dead+Space fails in apps without compose support (notably Alacritty, which drops dead-key events), and Unicode-input macros (`Ctrl+Shift+u`) leak as stray keystrokes into nvim/panes. They are therefore plain `DE_CARET`/`DE_GRAVE` keys, and the primary Hyprland host resolves the deadness away per-device: `kb_variant = "nodeadkeys"` (in `~/.config/home-manager/wm/hyprland.nix`, scoped to the ZMK keyboard) makes `^` and `` ` `` (and `~`) LIVE for this keyboard only — instant characters in every app including Alacritty. On other hosts they are dead keys as usual: press the key, then Space.
 
 Suspend/resume the hotkeys with Win+Alt+G.
+
+## Game mode
+
+The GAME layer (index 7) is the base layer with every hold behavior stripped, for games where held keys must be plain letters and accidental chords/mods ruin input:
+
+- **Home row mods off** — the home rows are plain `&kp` letters (no `hml`/`hmr`/`hmr_uml`), so any key can be held as long as the game wants without firing a modifier.
+- **No layer-tap holds** — Z/DOT/RET lose their `&lt` symbol holds; long presses stay letters/Enter. The thumb `&mo` keys (SYM/FNC) remain, so arrows, F-keys and mouse emulation are still reachable.
+- **Combos off** — no combo lists GAME, so chords can't misfire. Two exceptions: `to_default` (Q + top pinky) exits game mode, and `esc_game` (Q+W, same chord as `esc` but with a 150 ms idle guard) still sends Escape for menus without popping them mid-fight.
+
+Enter it from the settings layer (`&to GAME`, the key right next to `&to BASE`), exit with the `to_default` combo or the settings layer's `&to BASE`. `&to` replaces the whole layer stack, so there is no "stuck" layer state; a reboot/power-cycle also returns to the base layer.
 
 ## Combos
 
@@ -56,11 +70,11 @@ Combos are positional and mostly active on layers 0-3 unless noted. Devicetree d
 
 | Combo            | Keys (layer 0)          | Output                    |
 |------------------|-------------------------|---------------------------|
-| esc              | Q + W                   | Escape (all layers)       |
+| esc              | Q + W                   | Escape (all layers; on GAME only after 150 ms idle) |
 | cut              | X + C                   | Ctrl+X                    |
 | copy             | C + D                   | Ctrl+C                    |
 | paste            | D + V                   | Ctrl+V                    |
-| to_default       | Q + UNDER (pinky columns) | Go to layer 0 (layers 1-5) |
+| to_default       | Q + UNDER (pinky columns) | Go to layer 0 (layers 1-5, 7) |
 | alt_quotes       | J + L                   | `"` (layer 0 only)        |
 | numpad           | U + Y + UNDER           | Go to NUMPAD (layer 0)    |
 | backspace        | P + F                   | Backspace                 |
@@ -70,6 +84,7 @@ Combos are positional and mostly active on layers 0-3 unless noted. Devicetree d
 | alt_ret          | G + T                   | Enter                     |
 | capsword         | DOT + COMMA             | Caps Word (layer 0)       |
 | alt_tab          | M + N                   | Tab                       |
+| alt_semicolon    | P + B                   | `;`                       |
 | studio_unlock    | Z + A + Q               | Unlock ZMK Studio         |
 | sym_once         | Z + X                   | Sticky symbol layer (layer 0) |
 | undo             | V + SLASH               | Ctrl+Z                    |
